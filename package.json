@@ -1,0 +1,75 @@
+{
+    "name": "microsoft-to-do-cli",
+    "version": "1.0.0",
+    "description": "A project for Practice Enterprice. The Microsoft To Do integrated into a CLI.",
+    "author": "Lander Van laer @LanderVanlaer",
+    "bin": {
+        "td": "./bin/run"
+    },
+    "homepage": "https://github.com/ms-to-do-cli/To-do-CLI",
+    "license": "ISC",
+    "main": "dist/index.js",
+    "repository": "ms-to-do-cli/To-do-CLI",
+    "files": [
+        "/bin",
+        "/dist",
+        "/npm-shrinkwrap.json",
+        "/oclif.manifest.json"
+    ],
+    "dependencies": {
+        "@oclif/core": "^1",
+        "@oclif/plugin-help": "^5",
+        "@oclif/plugin-plugins": "^2.0.1",
+        "@typescript-eslint/parser": "^4.33.0"
+    },
+    "devDependencies": {
+        "@oclif/test": "^2",
+        "@types/chai": "^4",
+        "@types/mocha": "^9.0.0",
+        "@types/node": "^16.9.4",
+        "chai": "^4",
+        "eslint": "^7.32.0",
+        "eslint-config-oclif": "^4",
+        "eslint-config-oclif-typescript": "^1.0.2",
+        "globby": "^11",
+        "mocha": "^9",
+        "oclif": "^2",
+        "shx": "^0.3.3",
+        "ts-node": "^10.2.1",
+        "tslib": "^2.3.1",
+        "typescript": "^4.6.2"
+    },
+    "oclif": {
+        "bin": "td",
+        "dirname": "td",
+        "commands": "./dist/commands",
+        "plugins": [
+            "@oclif/plugin-help",
+            "@oclif/plugin-plugins"
+        ],
+        "topicSeparator": " ",
+        "topics": {
+            "hello": {
+                "description": "Say hello to the world and others"
+            }
+        }
+    },
+    "scripts": {
+        "build": "shx rm -rf dist && tsc -b",
+        "lint": "eslint . --ext .ts --config .eslintrc",
+        "postpack": "shx rm -f oclif.manifest.json",
+        "posttest": "yarn lint",
+        "prepack": "yarn build && oclif manifest && oclif readme",
+        "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+        "version": "oclif readme && git add README.md"
+    },
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "bugs": "https://github.com/ms-to-do-cli/To-do-CLI/issues",
+    "keywords": [
+        "oclif",
+        "Microsoft To Do"
+    ],
+    "types": "dist/index.d.ts"
+}
