@@ -276,3 +276,7 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,visualstudiocode,node,dotenv
 
+### OCLIF ###
+/lib
+/tmp
+oclif.manifest.json
