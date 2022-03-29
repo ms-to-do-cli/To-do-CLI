@@ -2,11 +2,12 @@ import getAppDataPath from 'appdata-path';
 import { config } from './config';
 import * as Path from 'node:path';
 import * as path from 'node:path';
-import * as fs from 'node:fs';
+import { FileSystemStorage } from '../storage/file-system-storage';
 
 export abstract class AppData {
     public static settings: Settings = {};
     public static loadedSettings: boolean = false;
+    public static storage = FileSystemStorage;
     private static fileName: string = Path.join(getAppDataPath(config.app.name), config.app.settings.fileName);
 
     public static loadSettings = async (): Promise<void> => {
@@ -15,7 +16,7 @@ export abstract class AppData {
 
         try {
             // no-error = can access | error = can not access
-            await fs.promises.access(AppData.fileName, fs.constants.R_OK | fs.constants.W_OK);
+            await AppData.storage.access(AppData.fileName);
         } catch (error: Error | any) {
             // there is no settingsfile yet
 
@@ -24,7 +25,7 @@ export abstract class AppData {
                 throw error;
 
             // create dir
-            await fs.promises.mkdir(path.dirname(AppData.fileName), { recursive: true });
+            await AppData.storage.mkdir(path.dirname(AppData.fileName));
 
             AppData.loadedSettings = true;
 
@@ -36,7 +37,7 @@ export abstract class AppData {
 
         // there is already a settingsfile
         // load settings file
-        AppData.settings = JSON.parse(await fs.promises.readFile(AppData.fileName, 'utf8'));
+        AppData.settings = JSON.parse(await AppData.storage.readFile(AppData.fileName));
         AppData.loadedSettings = true;
     };
 
@@ -45,7 +46,7 @@ export abstract class AppData {
             throw new Error('(INTERNAL) Cannot save settings before they are loaded');
 
         try {
-            await fs.promises.writeFile(AppData.fileName, JSON.stringify(AppData.settings), 'utf8');
+            await AppData.storage.writeFile(AppData.fileName, JSON.stringify(AppData.settings));
         } catch (error) {
             if (error)
                 throw error;

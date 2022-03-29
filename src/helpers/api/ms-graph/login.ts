@@ -59,6 +59,7 @@ export const getAuthorizationToken = async (): Promise<AuthorizationTokenRespons
             }), { headers })).data;
 
         AppData.settings.authorizationToken = authorizationTokenResponse.access_token;
+        delete AppData.settings.login;
         await AppData.storeSettings();
 
         return authorizationTokenResponse;
