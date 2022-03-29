@@ -20,7 +20,7 @@ export abstract class AppData {
             // there is no settingsfile yet
 
             // checking whether the error is NOT a "dir does not exist" exception
-            if (error?.errno !== -2)
+            if (error?.code !== 'ENOENT')
                 throw error;
 
             // create dir
