@@ -1,6 +1,7 @@
 import { Command, Flags } from '@oclif/core';
-import { DevicecodeResponse, getDevicecode } from '../helpers/api/ms-graph/login';
-import { jsonToText } from '../helpers/json-to-text';
+import { DevicecodeResponse, getAuthorizationToken, getDevicecode } from '../helpers/api/ms-graph/login';
+import { AppData } from '../helpers/config/app-data';
+import formatLog from '../helpers/log/format-log';
 
 export default class Login extends Command {
     static description = 'login into the graph api';
@@ -24,18 +25,24 @@ export default class Login extends Command {
         if (flags.json && flags.format)
             throw new Error('Cannot format in both JSON and plain text');
 
-        const res: DevicecodeResponse | undefined = await getDevicecode();
+        // check wether is logged in
+        if (await AppData.isAuthenticated()) {
+            // The previous user is logged off, while the new user can log on
+            delete AppData.settings.authorizationToken;
+            delete AppData.settings.login;
+        }
 
-        if (!res)
-            throw new Error('Did not recieve a reply back');
+        if (await AppData.isTryingToAuthenticate() && await getAuthorizationToken()) {
+            // AUTHENTICATED
+            const message = 'You are logged in';
+            formatLog(this, { message }, message, flags);
+            return;
+        }
 
-        if (flags.json)
-            this.log(JSON.stringify(res, null, '  '));
-        else if (flags.format)
-            this.log(jsonToText(res));
-        else
-            this.log(res.message);
+        const res: DevicecodeResponse = await getDevicecode();
 
-        // TODO: Store device_code in application data
+        res.message += ' After you have logged in, run this command again to validate';
+
+        formatLog(this, res, res.message, flags);
     }
 }

@@ -36,6 +36,7 @@
             "error",
             "always"
         ],
-        "no-warning-comments": "off"
+        "no-warning-comments": "off",
+        "max-params": "off"
     }
 }
