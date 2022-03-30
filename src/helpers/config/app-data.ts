@@ -1,8 +1,9 @@
 import getAppDataPath from 'appdata-path';
-import { config } from './config';
 import * as Path from 'node:path';
 import * as path from 'node:path';
+
 import { FileSystemStorage } from '../storage/file-system-storage';
+import { config } from './config';
 
 export abstract class AppData {
     public static settings: Settings = {};

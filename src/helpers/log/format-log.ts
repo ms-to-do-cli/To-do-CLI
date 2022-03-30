@@ -1,5 +1,6 @@
-import { jsonToText } from '../json-to-text';
 import { Command } from '@oclif/core';
+
+import { jsonToText } from '../json-to-text';
 
 // eslint-disable-next-line valid-jsdoc
 /**

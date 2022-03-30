@@ -1,14 +1,15 @@
 /* eslint-disable camelcase */
 import axios, { AxiosResponse } from 'axios';
-import { config } from '../../config/config';
+
 import { AppData } from '../../config/app-data';
-import { headers } from './axios/headers';
+import { config } from '../../config/config';
 import AxiosMicrosoftGraphError from './axios/axios-microsoft-graph-error';
+import { headers } from './axios/headers';
 
 export interface DevicecodeResponse {
     user_code: string;
     device_code: string;
-    verification_uri: string;
+    verification_url: string;
     expires_in: number;
     interval: number;
     message: string;

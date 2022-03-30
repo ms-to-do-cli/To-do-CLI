@@ -1,4 +1,5 @@
 import { Command, Flags } from '@oclif/core';
+
 import { DevicecodeResponse, getAuthorizationToken, getDevicecode } from '../helpers/api/ms-graph/login';
 import { AppData } from '../helpers/config/app-data';
 import formatLog from '../helpers/log/format-log';
