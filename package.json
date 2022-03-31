@@ -21,7 +21,6 @@
         "@oclif/core": "^1",
         "@oclif/plugin-help": "^5",
         "@oclif/plugin-plugins": "^2.0.1",
-        "@typescript-eslint/parser": "^4.33.0",
         "appdata-path": "^1.0.0",
         "axios": "^0.26.1"
     },
@@ -31,6 +30,7 @@
         "@types/mocha": "^9.0.0",
         "@types/node": "^16.9.4",
         "@typescript-eslint/eslint-plugin": "^5.16.0",
+        "@typescript-eslint/parser": "^5.17.0",
         "chai": "^4",
         "eslint": "^7.32.0",
         "eslint-config-oclif": "^4",

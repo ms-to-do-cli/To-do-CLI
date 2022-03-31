@@ -7,7 +7,7 @@ import { config } from './config';
 
 export abstract class AppData {
     public static settings: Settings = {};
-    public static loadedSettings: boolean = false;
+    public static loadedSettings = false;
     public static storage = FileSystemStorage;
     private static fileName: string = Path.join(getAppDataPath(config.app.name), config.app.settings.fileName);
 
