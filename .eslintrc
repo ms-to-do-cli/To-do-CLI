@@ -13,7 +13,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "simple-import-sort"
     ],
     "rules": {
         "indent": [
@@ -22,7 +23,7 @@
         ],
         "linebreak-style": [
             "error",
-            "unix"
+            "windows"
         ],
         "quotes": [
             "error",
@@ -35,6 +36,11 @@
         "object-curly-spacing": [
             "error",
             "always"
-        ]
+        ],
+        "no-warning-comments": "off",
+        "max-params": "off",
+        "max-nested-callbacks": "off",
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error"
     }
 }
