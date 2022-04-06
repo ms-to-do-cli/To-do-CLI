@@ -9,6 +9,18 @@ export default class AxiosMicrosoftGraphError extends Error {
     }
 }
 
+export interface MsGraphErrorResponse {
+    'error': {
+        'code': string,
+        'message': string,
+        'innerError': {
+            'date': string,
+            'request-id': string,
+            'client-request-id': string
+        }
+    };
+}
+
 export interface MsErrorResponse {
     'error': string;
     'error_description': string;
