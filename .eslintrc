@@ -41,6 +41,8 @@
         "max-params": "off",
         "max-nested-callbacks": "off",
         "simple-import-sort/imports": "error",
-        "simple-import-sort/exports": "error"
+        "simple-import-sort/exports": "error",
+        "unicorn/no-array-callback-reference": "off",
+        "unicorn/no-array-reduce": "off"
     }
 }
