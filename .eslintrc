@@ -43,6 +43,7 @@
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
         "unicorn/no-array-callback-reference": "off",
-        "unicorn/no-array-reduce": "off"
+        "unicorn/no-array-reduce": "off",
+        "no-await-in-loop": "off"
     }
 }
