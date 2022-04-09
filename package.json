@@ -1,6 +1,6 @@
 {
     "name": "microsoft-to-do-cli",
-    "version": "1.0.0",
+    "version": "1.2.1",
     "description": "A project for Practice Enterprice. The Microsoft To Do integrated into a CLI.",
     "author": "Lander Van laer @LanderVanlaer",
     "bin": {
@@ -22,11 +22,17 @@
         "@oclif/plugin-help": "^5",
         "@oclif/plugin-plugins": "^2.0.1",
         "appdata-path": "^1.0.0",
-        "axios": "^0.26.1"
+        "axios": "^0.26.1",
+        "cli-table": "^0.3.11",
+        "inquirer": "^8.2.2",
+        "inquirer-autocomplete-prompt": "^2.0.0"
     },
     "devDependencies": {
         "@oclif/test": "^2",
         "@types/chai": "^4",
+        "@types/cli-table": "^0.3.0",
+        "@types/inquirer": "^8.2.1",
+        "@types/inquirer-autocomplete-prompt": "^1.3.4",
         "@types/mocha": "^9.0.0",
         "@types/node": "^16.9.4",
         "@typescript-eslint/eslint-plugin": "^5.16.0",
