@@ -2,7 +2,7 @@
 // https://github.com/oclif/oclif/issues/286
 import { expect, test } from '@oclif/test';
 
-import { TaskListResponseData } from '../../dist/helpers/api/ms-graph/task-list';
+import { TaskListResponseData } from '../../src/helpers/api/ms-graph/task-list';
 import { AppData } from '../../src/helpers/config/app-data';
 import { MemoryStorage } from '../../src/helpers/storage/memory-storage';
 import { Interactive } from '../../src/interactive/interactive';

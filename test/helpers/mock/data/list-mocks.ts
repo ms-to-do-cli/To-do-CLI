@@ -1,5 +1,5 @@
-import { TaskListResponseData } from '../../../../dist/helpers/api/ms-graph/task-list';
 import { MsGraphErrorResponse } from '../../../../src/helpers/api/ms-graph/axios/axios-microsoft-graph-error';
+import { TaskListResponseData } from '../../../../src/helpers/api/ms-graph/task-list';
 
 const listMocks: { taskListResponseData: TaskListResponseData[], badTokensResponse: MsGraphErrorResponse[] } = {
     taskListResponseData: [{
