@@ -36,6 +36,18 @@ const listMocks: { taskListResponseData: TaskListResponseData[], badTokensRespon
                 },
             },
         },
+        {
+            error: {
+                code: 'invalidRequest',
+                message: 'The property \'displayName\' is required when creating the taskList entity',
+                innerError: {
+                    code: 'InvalidModel',
+                    date: 'DATE',
+                    'request-id': 'REQUEST_ID',
+                    'client-request-id': 'CLIENT_REQUEST_ID',
+                },
+            },
+        },
     ],
 };
 

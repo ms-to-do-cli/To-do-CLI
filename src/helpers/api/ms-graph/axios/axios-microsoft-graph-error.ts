@@ -14,6 +14,7 @@ export interface MsGraphErrorResponse {
         'code': string,
         'message': string,
         'innerError': {
+            'code'?: string,
             'date': string,
             'request-id': string,
             'client-request-id': string

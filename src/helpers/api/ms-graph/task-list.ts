@@ -3,20 +3,22 @@ import { request } from './axios/request';
 
 export class TaskList implements TaskListResponseData {
     private static readonly link = `${config.microsoftGraph.url.default}/me/todo/lists`;
-    public '@odata.etag': string;
+    public '@odata.etag'?: string;
+    public '@odata.type'?: string;
     public displayName: string;
     public id: string;
     public isOwner: boolean;
     public isShared: boolean;
     public wellknownListName: string;
 
-    constructor(_odataEtag: string, displayName: string, id: string, isOwner: boolean, isShared: boolean, wellknownListName: string) {
-        this['@odata.etag'] = _odataEtag;
-        this.displayName = displayName;
-        this.id = id;
-        this.isOwner = isOwner;
-        this.isShared = isShared;
-        this.wellknownListName = wellknownListName;
+    constructor(taskListData: TaskListResponseData) {
+        this['@odata.etag'] = taskListData['@odata.etag'];
+        this['@odata.type'] = taskListData['@odata.type'];
+        this.displayName = taskListData.displayName;
+        this.id = taskListData.id;
+        this.isOwner = taskListData.isOwner;
+        this.isShared = taskListData.isShared;
+        this.wellknownListName = taskListData.wellknownListName;
     }
 
     public static async getTaskLists(): Promise<TaskList[]> {
@@ -24,13 +26,20 @@ export class TaskList implements TaskListResponseData {
             .map<TaskList>(TaskList.taskListReponseDatatoTaskList);
     }
 
+    public static async create(title: string): Promise<TaskList> {
+        return new TaskList((await request<TaskListResponseData>('POST', TaskList.link, {
+            displayName: title,
+        })).data);
+    }
+
     private static taskListReponseDatatoTaskList(data: TaskListResponseData): TaskList {
-        return new TaskList(data['@odata.etag'], data.displayName, data.id, data.isOwner, data.isShared, data.wellknownListName);
+        return new TaskList(data);
     }
 }
 
 export interface TaskListResponseData {
-    '@odata.etag': string,
+    '@odata.etag'?: string,
+    '@odata.type'?: string,
     'displayName': string,
     'isOwner': boolean,
     'isShared': boolean,

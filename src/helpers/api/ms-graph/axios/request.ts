@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 
 import { AppData } from '../../../config/app-data';
-import { headers } from './headers';
+import { headersGet } from './headers-get';
+import { headersPost } from './headers-post';
 
 export const request = async <ResponseType>(type: RequestType, url: string, data = {}): Promise<AxiosResponse<ResponseType>> => {
     switch (type) {
@@ -9,15 +10,15 @@ export const request = async <ResponseType>(type: RequestType, url: string, data
     case 'get':
         return axios.get<ResponseType>(url, {
             headers: {
-                ...headers,
+                ...headersGet,
                 Authorization: await getAuthorizationBearer(),
             },
         });
     case 'POST':
     case 'post':
-        return axios.post<any, AxiosResponse<ResponseType>>(url, new URLSearchParams(data), {
+        return axios.post<any, AxiosResponse<ResponseType>>(url, data, {
             headers: {
-                ...headers,
+                ...headersPost,
                 Authorization: await getAuthorizationBearer(),
             },
         });
