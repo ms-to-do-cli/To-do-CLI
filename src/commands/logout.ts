@@ -35,8 +35,6 @@ export default class Logout extends Command {
         if (flags.json && flags.format)
             throw new Error('Cannot format in both JSON and plain text');
 
-
-
       if (await AppData.isAuthenticated()) {
         // The previous user is logged off, while the new user can log on
         delete AppData.settings.authorizationToken;
