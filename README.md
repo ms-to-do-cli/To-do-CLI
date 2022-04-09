@@ -22,7 +22,7 @@ $ npm install -g microsoft-to-do-cli
 $ td COMMAND
 running command...
 $ td (--version)
-microsoft-to-do-cli/1.0.0 win32-x64 node-v16.13.0
+microsoft-to-do-cli/1.2.1 win32-x64 node-v16.13.0
 $ td --help [COMMAND]
 USAGE
   $ td COMMAND
@@ -33,8 +33,6 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`td hello PERSON`](#td-hello-person)
-* [`td hello world`](#td-hello-world)
 * [`td help [COMMAND]`](#td-help-command)
 * [`td plugins`](#td-plugins)
 * [`td plugins:install PLUGIN...`](#td-pluginsinstall-plugin)
@@ -45,46 +43,6 @@ USAGE
 * [`td plugins:uninstall PLUGIN...`](#td-pluginsuninstall-plugin-1)
 * [`td plugins:uninstall PLUGIN...`](#td-pluginsuninstall-plugin-2)
 * [`td plugins update`](#td-plugins-update)
-
-## `td hello PERSON`
-
-Say hello
-
-```
-USAGE
-  $ td hello [PERSON] -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
-
-FLAGS
-  -f, --from=<value>  (required) Whom is saying hello
-
-DESCRIPTION
-  Say hello
-
-EXAMPLES
-  $ oex hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
-```
-
-_See code: [dist/commands/hello/index.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v1.0.0/dist/commands/hello/index.ts)_
-
-## `td hello world`
-
-Say hello world
-
-```
-USAGE
-  $ td hello world
-
-DESCRIPTION
-  Say hello world
-
-EXAMPLES
-  $ oex hello world
-  hello world! (./src/commands/hello/world.ts)
-```
 
 ## `td help [COMMAND]`
 

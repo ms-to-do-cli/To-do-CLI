@@ -9,6 +9,7 @@ export type Config = {
         url: {
             devicecode: string;
             authorizationToken: string;
+            default: string;
         }
     },
     app: {
@@ -28,6 +29,7 @@ export const config: Config = {
         url: {
             devicecode: 'https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode',
             authorizationToken: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+            default: 'https://graph.microsoft.com/v1.0',
         },
     },
     app: {
