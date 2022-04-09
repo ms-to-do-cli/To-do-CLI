@@ -1,1 +1,0 @@
-[{"name":"C:\\Users\\wanne\\AppData\\Roaming\\Microsft-To-Do-CLI\\settings.json","data":"{\"authorizationToken\": \"AUTHORIZATION_TOKEN\"}"}]
