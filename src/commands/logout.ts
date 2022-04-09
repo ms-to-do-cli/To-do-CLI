@@ -2,16 +2,10 @@
 /* eslint-disable indent */
 import {Command, Flags} from '@oclif/core';
 
-import { DevicecodeResponse, getAuthorizationToken, getDevicecode } from '../helpers/api/ms-graph/login';
-
 import { AppData } from '../helpers/config/app-data';
-
 import formatLog from '../helpers/log/format-log';
 
-
-
 export default class Logout extends Command {
-
   static flags = {
     format: Flags.boolean({
         char: 'F', description: 'Format the response in plain text',
@@ -19,15 +13,15 @@ export default class Logout extends Command {
     json: Flags.boolean({
         char: 'J', description: 'Format the response in JSON',
     }),
-  }
+  };
 
-  static description = 'Log out of your microsoft account'
+  static description = 'Log out of your microsoft account';
 
   static examples = [
     '<%= config.bin %> <%= command.id %>',
-  ]
+  ];
 
-  static args = [{name: 'file'}]
+  static args = [{name: 'file'}];
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(Logout);
