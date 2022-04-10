@@ -1,6 +1,6 @@
 {
     "name": "microsoft-to-do-cli",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "description": "A project for Practice Enterprice. The Microsoft To Do integrated into a CLI.",
     "author": "Lander Van laer @LanderVanlaer",
     "bin": {
@@ -68,6 +68,7 @@
     "scripts": {
         "build": "shx rm -rf dist && tsc -b",
         "lint": "eslint . --ext .ts --config .eslintrc",
+        "lint-fix": "eslint . --ext .ts --config .eslintrc --fix",
         "postpack": "shx rm -f oclif.manifest.json",
         "posttest": "yarn lint",
         "prepack": "yarn build && oclif manifest && oclif readme",

@@ -22,7 +22,7 @@ $ npm install -g microsoft-to-do-cli
 $ td COMMAND
 running command...
 $ td (--version)
-microsoft-to-do-cli/1.2.1 win32-x64 node-v16.13.0
+microsoft-to-do-cli/1.3.0 win32-x64 node-v16.14.0
 $ td --help [COMMAND]
 USAGE
   $ td COMMAND
