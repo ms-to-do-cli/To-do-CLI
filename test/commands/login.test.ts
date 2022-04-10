@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { expect, test } from '@oclif/test';
-import getAppDataPath from 'appdata-path';
-import * as Path from 'node:path';
 
 import { MsErrorResponse } from '../../src/helpers/api/ms-graph/axios/axios-microsoft-graph-error';
 import { AuthorizationTokenResponse, DevicecodeResponse } from '../../src/helpers/api/ms-graph/login';
 import { AppData, Settings } from '../../src/helpers/config/app-data';
 import { config } from '../../src/helpers/config/config';
 import { MemoryStorage } from '../../src/helpers/storage/memory-storage';
+import { appDataFileName } from '../helpers/app-data-file-name';
 import reset from '../helpers/reset';
-
-const appDataFileName = Path.join(getAppDataPath(config.app.name), config.app.settings.fileName);
 
 /* eslint-disable camelcase */
 const mockData: { devicecodes: Array<DevicecodeResponse>, errors: Array<MsErrorResponse>, tokens: Array<AuthorizationTokenResponse> } = {
