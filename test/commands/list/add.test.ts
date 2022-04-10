@@ -19,7 +19,7 @@ describe('list:add', () => {
                 .stub(AppData, 'storage', MemoryStorage)
                 .do(mockLogin)
                 .nock('https://graph.microsoft.com/v1.0', api => {
-                    api.post('/me/todo/lists').reply(200, listMocks.taskListResponseData[1]);
+                    api.post('/me/todo/lists').reply(201, listMocks.taskListResponseData[1]);
                 })
                 .command(['list:add', 'Shopping list'])
                 .it('runs list add Shopping list', ctx => {
@@ -33,7 +33,7 @@ describe('list:add', () => {
                 .stub(AppData, 'storage', MemoryStorage)
                 .do(mockLogin)
                 .nock('https://graph.microsoft.com/v1.0', api => {
-                    api.post('/me/todo/lists').reply(200, listMocks.taskListResponseData[1]);
+                    api.post('/me/todo/lists').reply(201, listMocks.taskListResponseData[1]);
                 })
                 .command(['list:add', 'Shopping list', '--json'])
                 .it('runs list add Shopping list --json', ctx => {
@@ -49,7 +49,7 @@ describe('list:add', () => {
                 .stub(AppData, 'storage', MemoryStorage)
                 .do(mockLogin)
                 .nock('https://graph.microsoft.com/v1.0', api => {
-                    api.post('/me/todo/lists').reply(200, listMocks.taskListResponseData[1]);
+                    api.post('/me/todo/lists').reply(201, listMocks.taskListResponseData[1]);
                 })
                 .command(['list:add', '-J', 'Shopping list'])
                 .it('runs list add -J Shopping list', ctx => {
@@ -66,7 +66,7 @@ describe('list:add', () => {
                 .stub(AppData, 'storage', MemoryStorage)
                 .do(mockLogin)
                 .nock('https://graph.microsoft.com/v1.0', api => {
-                    api.post('/me/todo/lists').reply(200, listMocks.taskListResponseData[1]);
+                    api.post('/me/todo/lists').reply(201, listMocks.taskListResponseData[1]);
                 })
                 .command(['list:add', 'Shopping list', '--format'])
                 .it('runs list add Shopping list --format', ctx => {
@@ -84,7 +84,7 @@ describe('list:add', () => {
                 .stub(AppData, 'storage', MemoryStorage)
                 .do(mockLogin)
                 .nock('https://graph.microsoft.com/v1.0', api => {
-                    api.post('/me/todo/lists').reply(200, listMocks.taskListResponseData[1]);
+                    api.post('/me/todo/lists').reply(201, listMocks.taskListResponseData[1]);
                 })
                 .command(['list:add', '-F', 'Shopping list'])
                 .it('runs list add -F Shopping list', ctx => {
