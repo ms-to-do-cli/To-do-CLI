@@ -143,6 +143,14 @@ describe('list:show', () => {
             .stderr()
             // @ts-ignore
             .stub(AppData, 'storage', MemoryStorage)
+            .command(['list:add', '--json', 'NAME', '-F'])
+            .catch('Cannot format in both JSON and plain text')
+            .it('runs list add --json NAME -F | format JSON and plain text');
+
+        test
+            .stderr()
+            // @ts-ignore
+            .stub(AppData, 'storage', MemoryStorage)
             .do(mockLogin)
             .nock('https://graph.microsoft.com/v1.0', api => {
                 api.get('/me/todo/lists').reply(401, listMocks.badTokensResponse[0]);

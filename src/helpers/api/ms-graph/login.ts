@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import { AppData } from '../../config/app-data';
 import { config } from '../../config/config';
 import AxiosMicrosoftGraphError from './axios/axios-microsoft-graph-error';
-import { headers } from './axios/headers';
+import { headersGet } from './axios/headers-get';
 
 export interface DevicecodeResponse {
     user_code: string;
@@ -30,7 +30,7 @@ export const getDevicecode = async (): Promise<DevicecodeResponse> => {
         const devicecodeResponse: DevicecodeResponse = (await axios.post<any, AxiosResponse<DevicecodeResponse>, any>(config.microsoftGraph.url.devicecode, new URLSearchParams({
             client_id: config.microsoftGraph.client.id,
             scope: config.microsoftGraph.scope,
-        }), { headers })).data;
+        }), { headers: headersGet })).data;
 
         const expireDate = new Date();
         expireDate.setSeconds(expireDate.getSeconds() + devicecodeResponse.expires_in);
@@ -57,7 +57,7 @@ export const getAuthorizationToken = async (): Promise<AuthorizationTokenRespons
                 grant_type: 'device_code',
                 client_id: config.microsoftGraph.client.id,
                 code: AppData.settings.login.devicecode,
-            }), { headers })).data;
+            }), { headers: headersGet })).data;
 
         AppData.settings.authorizationToken = authorizationTokenResponse.access_token;
         delete AppData.settings.login;

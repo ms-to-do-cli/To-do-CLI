@@ -4,6 +4,7 @@ import PromptUI from 'inquirer/lib/ui/prompt';
 import inquirerPrompt from 'inquirer-autocomplete-prompt';
 
 import I from '../commands/i';
+import add from './add/add';
 import exit from './exit';
 import list from './list';
 
@@ -11,6 +12,7 @@ export class Interactive {
     public static commands: InteractiveCommand[] = [
         { name: 'list', run: list },
         { name: 'exit', run: exit },
+        { name: 'add', run: add },
     ];
 
     public static prompt = (questions: QuestionCollection<any>): Promise<any> & { ui: PromptUI<any> } => {
