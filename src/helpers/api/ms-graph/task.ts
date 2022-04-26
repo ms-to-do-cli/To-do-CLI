@@ -15,17 +15,17 @@ export class Task implements TaskResponseData {
     public recurrence?: MsPatternedRecurrence;
     public 'linkedResources@odata.context'?: string;
 
-    public 'body': {
-        'content': string;
-        'contentType': 'text' | 'html';
+    public body: {
+        content: string;
+        contentType: 'text' | 'html';
     };
 
-    public 'linkedResources'?: [
+    public linkedResources?: [
         {
-            'applicationName': string;
-            'displayName': string;
-            'externalId': string;
-            'id': string
+            applicationName: string;
+            displayName: string;
+            externalId: string;
+            id: string
         }
     ];
 
@@ -44,6 +44,10 @@ export class Task implements TaskResponseData {
         this.body = taskData.body;
         this['linkedResources@odata.context'] = taskData['linkedResources@odata.context'];
         this.linkedResources = taskData.linkedResources;
+    }
+
+    public static taskResponseDataToTask(data: TaskResponseData): Task {
+        return new Task(data);
     }
 }
 
@@ -72,4 +76,10 @@ export interface TaskResponseData {
             'id': string
         }
     ]
+}
+
+export interface ListTasksResponse {
+    '@odata.context'?: string,
+    '@odata.nextLink'?: string,
+    value: TaskResponseData[],
 }
