@@ -1,4 +1,4 @@
 export interface MsDateTime {
-    dateTime: Date,
+    dateTime: Date | string,
     timeZone: string,
 }

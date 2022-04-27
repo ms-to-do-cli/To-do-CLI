@@ -8,8 +8,8 @@ export class Task implements TaskResponseData {
     public isReminderOn: boolean;
     public status: 'notStarted' | 'inProgress' | 'completed' | 'waitingOnOthers' | 'deferred';
     public title: string;
-    public createdDateTime: Date;
-    public lastModifiedDateTime: Date;
+    public createdDateTime: Date | string;
+    public lastModifiedDateTime: Date | string;
     public completedDateTime?: MsDateTime;
     public reminderDateTime?: MsDateTime;
     public recurrence?: MsPatternedRecurrence;
@@ -58,8 +58,8 @@ export interface TaskResponseData {
     'isReminderOn': boolean,
     'status': 'notStarted' | 'inProgress' | 'completed' | 'waitingOnOthers' | 'deferred',
     'title': string,
-    'createdDateTime': Date,
-    'lastModifiedDateTime': Date,
+    'createdDateTime': Date | string,
+    'lastModifiedDateTime': Date | string,
     'completedDateTime'?: MsDateTime,
     'reminderDateTime'?: MsDateTime,
     'recurrence'?: MsPatternedRecurrence,
