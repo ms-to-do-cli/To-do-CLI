@@ -89,6 +89,30 @@ describe('task:show', () => {
                         '│ Buy bread │ 1111111111 │\n' +
                         '└───────────┴────────────┘');
                 });
+
+            test
+                .stdout()
+                // @ts-ignore
+                .stub(AppData, 'storage', MemoryStorage)
+                .do(mockLogin)
+                .nock('https://graph.microsoft.com', api => {
+                    api.get('/v1.0/me/todo/lists').reply(200, {
+                        value: [listMocks.taskListResponseData[1]],
+                    } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                    api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                        value: [taskMocks.taskResponseData[0]],
+                    } as ListTasksResponse);
+                })
+                .command(['task:show', 'ShOpPiNg LiSt'])
+                .it('runs show task with specified TaskListName | case insensitive', ctx => {
+                    expect(ctx.stdout).to.contain(
+                        '┌───────────┬────────────┐\n' +
+                        '│ Name      │ Id         │\n' +
+                        '├───────────┼────────────┤\n' +
+                        '│ Buy bread │ 1111111111 │\n' +
+                        '└───────────┴────────────┘');
+                });
         });
 
         describe('json', () => {

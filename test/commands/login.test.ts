@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { expect, test } from '@oclif/test';
+import axios from 'axios';
 
 import { MsErrorResponse } from '../../src/helpers/api/ms-graph/axios/axios-microsoft-graph-error';
 import { AuthorizationTokenResponse, DevicecodeResponse } from '../../src/helpers/api/ms-graph/login';
@@ -41,6 +42,15 @@ const mockData: { devicecodes: Array<DevicecodeResponse>, errors: Array<MsErrorR
             access_token: 'ACCESS_TOKEN',
             refresh_token: 'REFRESH_TOKEN',
             id_token: 'ID_TOKEN',
+        },
+        {
+            token_type: 'Bearer',
+            scope: config.microsoftGraph.scope,
+            expires_in: 3600,
+            ext_expires_in: 3600,
+            access_token: 'ACCESS_TOKEN_NEW',
+            refresh_token: 'REFRESH_TOKEN_NEW',
+            id_token: 'ID_TOKEN_NEW',
         },
     ],
 };
@@ -188,6 +198,44 @@ describe('login', () => {
                 .command(['login', '-J'])
                 .it('runs login -J', ctx => {
                     expect(JSON.parse(ctx.stdout)).deep.equal({ message: 'You are logged in' });
+                });
+        });
+
+        describe('requests access token by refresh_token', () => {
+            test
+                .stdout()
+                // @ts-ignore
+                .stub(AppData, 'storage', MemoryStorage)
+                .stub(axios, 'get', () => ({ data: { value: [] } }))
+                .nock('https://login.microsoftonline.com', api => {
+                    api.post('/consumers/oauth2/v2.0/token').reply(200, mockData.tokens[1]);
+                })
+                .do(() => {
+                    MemoryStorage.files.push({
+                        name: appDataFileName,
+                        data: JSON.stringify(
+                            {
+                                refreshToken: 'REFRESH_TOKEN',
+                                authorization: {
+                                    token: 'AUTHORIZATION_TOKEN',
+                                    expireDate: '2000-01-01T00:00:00.000',
+                                } as Settings,
+                            },
+                        ),
+                    });
+                })
+                .command(['list:show'])
+                .it('runs list:show', () => {
+                    const memoryStorageData = MemoryStorage.files.find(f => f.name === appDataFileName)?.data;
+                    expect(memoryStorageData).to.not.be.null;
+                    expect(memoryStorageData).to.not.be.undefined;
+                    expect(memoryStorageData).to.exist;
+                    expect(memoryStorageData).to.have.length.gt(0);
+                    const memoryStorageDataParsed: Settings = JSON.parse(memoryStorageData as string);
+                    expect(memoryStorageDataParsed.authorization).to.exist;
+                    expect(memoryStorageDataParsed.authorization?.token).to.equal('ACCESS_TOKEN_NEW');
+                    expect(memoryStorageDataParsed.authorization?.expireDate).to.exist;
+                    expect(memoryStorageDataParsed.refreshToken).to.equal('REFRESH_TOKEN_NEW');
                 });
         });
     });

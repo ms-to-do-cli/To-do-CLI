@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 
 import { AppData } from '../../../config/app-data';
+import { refreshToken } from '../login';
 import { headersGet } from './headers-get';
 import { headersPost } from './headers-post';
 
@@ -33,7 +34,10 @@ export const getAuthorizationBearer = async () => {
     if (!await AppData.isAuthenticated())
         throw new NotLoggedInError();
 
-    return `Bearer ${AppData.settings.authorizationToken}`;
+    if (AppData.settings.authorization?.expireDate && new Date(AppData.settings.authorization.expireDate).getTime() < Date.now())
+        await refreshToken();
+
+    return `Bearer ${AppData.settings.authorization?.token}`;
 };
 
 export class NotLoggedInError extends Error {

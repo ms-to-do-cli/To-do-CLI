@@ -161,6 +161,32 @@ describe('[INTERACTIVE] i', () => {
                 .stdout()
                 // @ts-ignore
                 .stub(AppData, 'storage', MemoryStorage)
+                .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'task' }, { listName: 'tAkEn' }]))
+                .do(mockLogin)
+                .nock('https://graph.microsoft.com', api => {
+                    api.get('/v1.0/me/todo/lists').reply(200, {
+                        '@odata.context': 'https://graph.microsoft.com/v1.0/$metadata#users(\'USER\')/todo/lists',
+                        value: [listMocks.taskListResponseData[0]],
+                    } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                    api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                        value: [taskMocks.taskResponseData[0]],
+                    } as ListTasksResponse);
+                })
+                .command(['i'])
+                .it('shows one task | case insensitive', ctx => {
+                    expect(ctx.stdout).to.contain(
+                        '┌───────────┬───────────┬─────────┐\n' +
+                        '│ Name      │ Status    │ Content │\n' +
+                        '├───────────┼───────────┼─────────┤\n' +
+                        '│ Buy bread │ completed │         │\n' +
+                        '└───────────┴───────────┴─────────┘');
+                });
+
+            test
+                .stdout()
+                // @ts-ignore
+                .stub(AppData, 'storage', MemoryStorage)
                 .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'task' }, { listName: 'Taken' }]))
                 .do(mockLogin)
                 .nock('https://graph.microsoft.com', api => {

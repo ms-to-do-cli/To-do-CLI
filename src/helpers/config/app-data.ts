@@ -59,7 +59,7 @@ export abstract class AppData {
     public static isAuthenticated = async (): Promise<boolean> => {
         await AppData.loadSettings();
 
-        return AppData.settings.authorizationToken !== undefined && AppData.settings.authorizationToken.length > 0;
+        return AppData.settings.authorization?.token !== undefined && AppData.settings.authorization.token.length > 0;
     };
 
     public static isTryingToAuthenticate = async (): Promise<boolean> => {
@@ -76,5 +76,9 @@ export interface Settings {
         devicecode: string;
         expireDate: Date;
     };
-    authorizationToken?: string;
+    authorization?: {
+        token: string,
+        expireDate: Date
+    };
+    refreshToken?: string;
 }

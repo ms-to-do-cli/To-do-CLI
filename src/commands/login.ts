@@ -29,7 +29,7 @@ export default class Login extends Command {
         // check wether is logged in
         if (await AppData.isAuthenticated()) {
             // The previous user is logged off, while the new user can log on
-            delete AppData.settings.authorizationToken;
+            delete AppData.settings.authorization;
             delete AppData.settings.login;
         }
 

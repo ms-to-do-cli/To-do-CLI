@@ -59,7 +59,14 @@ export const getAuthorizationToken = async (): Promise<AuthorizationTokenRespons
                 code: AppData.settings.login.devicecode,
             }), { headers: headersGet })).data;
 
-        AppData.settings.authorizationToken = authorizationTokenResponse.access_token;
+        const expireDate = new Date();
+        expireDate.setSeconds(expireDate.getSeconds() + authorizationTokenResponse.expires_in);
+        AppData.settings.authorization = {
+            token: authorizationTokenResponse.access_token,
+            expireDate,
+        };
+        AppData.settings.refreshToken = authorizationTokenResponse.refresh_token;
+
         delete AppData.settings.login;
         await AppData.storeSettings();
 
@@ -70,6 +77,36 @@ export const getAuthorizationToken = async (): Promise<AuthorizationTokenRespons
 
         if (axios.isAxiosError(error))
             throw new AxiosMicrosoftGraphError('Cannot request authorizationtoken', error);
+
+        throw error;
+    }
+};
+
+export const refreshToken = async (): Promise<void> => {
+    if (!AppData.settings.refreshToken)
+        throw new Error('(INTERNAL) No refreshToken');
+
+    try {
+        const authorizationTokenResponse: AuthorizationTokenResponse =
+            (await axios.post<any, AxiosResponse<AuthorizationTokenResponse>>(config.microsoftGraph.url.refreshToken, new URLSearchParams({
+                grant_type: 'refresh_token',
+                client_id: config.microsoftGraph.client.id,
+                refresh_token: AppData.settings.refreshToken,
+                scope: config.microsoftGraph.scope,
+            }), { headers: headersGet })).data;
+
+        const expireDate = new Date();
+        expireDate.setSeconds(expireDate.getSeconds() + authorizationTokenResponse.expires_in);
+        AppData.settings.authorization = {
+            token: authorizationTokenResponse.access_token,
+            expireDate,
+        };
+        AppData.settings.refreshToken = authorizationTokenResponse.refresh_token;
+
+        await AppData.storeSettings();
+    } catch (error: any) {
+        if (axios.isAxiosError(error))
+            throw new AxiosMicrosoftGraphError('Cannot request authorizationtoken by refreshtoken', error);
 
         throw error;
     }
