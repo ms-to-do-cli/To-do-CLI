@@ -1,5 +1,6 @@
 import { config } from '../../config/config';
 import { request } from './axios/request';
+import { ListTasksResponse, Task } from './task';
 
 export class TaskList implements TaskListResponseData {
     private static readonly link = `${config.microsoftGraph.url.default}/me/todo/lists`;
@@ -9,7 +10,7 @@ export class TaskList implements TaskListResponseData {
     public id: string;
     public isOwner: boolean;
     public isShared: boolean;
-    public wellknownListName: string;
+    public wellknownListName: 'none' | 'defaultList' | 'flaggedEmails' | 'unknownFutureValue';
 
     constructor(taskListData: TaskListResponseData) {
         this['@odata.etag'] = taskListData['@odata.etag'];
@@ -32,8 +33,21 @@ export class TaskList implements TaskListResponseData {
         })).data);
     }
 
+    public static async getTaskListByName(name = 'defaultList'): Promise<TaskList | undefined> {
+        return (await this.getTaskLists())
+            .find(taskList =>
+                taskList.displayName.toLowerCase().includes(name.toLowerCase()) ||
+                taskList.wellknownListName.toLowerCase().includes(name.toLowerCase()),
+            );
+    }
+
     private static taskListReponseDatatoTaskList(data: TaskListResponseData): TaskList {
         return new TaskList(data);
+    }
+
+    public async getTasks(): Promise<Task[]> {
+        return (await request<ListTasksResponse>('GET', `${TaskList.link}/${this.id}/tasks`))
+            .data.value.map<Task>(Task.taskResponseDataToTask);
     }
 }
 
@@ -43,6 +57,6 @@ export interface TaskListResponseData {
     'displayName': string,
     'isOwner': boolean,
     'isShared': boolean,
-    'wellknownListName': string,
+    'wellknownListName': 'none' | 'defaultList' | 'flaggedEmails' | 'unknownFutureValue',
     'id': string,
 }
