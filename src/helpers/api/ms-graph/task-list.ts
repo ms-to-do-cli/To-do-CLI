@@ -36,8 +36,8 @@ export class TaskList implements TaskListResponseData {
     public static async getTaskListByName(name = 'defaultList'): Promise<TaskList | undefined> {
         return (await this.getTaskLists())
             .find(taskList =>
-                taskList.displayName.includes(name) ||
-                taskList.wellknownListName.includes(name),
+                taskList.displayName.toLowerCase().includes(name.toLowerCase()) ||
+                taskList.wellknownListName.toLowerCase().includes(name.toLowerCase()),
             );
     }
 
