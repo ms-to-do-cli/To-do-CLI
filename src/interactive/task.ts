@@ -21,12 +21,12 @@ async function task(this: I): Promise<void> {
                     return listsNames;
 
                 return listsNames
-                    .filter((listName: string) => listName.includes(input));
+                    .filter((listName: string) => listName.toLowerCase().includes(input.toLowerCase()));
             },
         },
     ]);
 
-    const chosenList: TaskList | undefined = lists.find(list => list.displayName.includes(res.listName));
+    const chosenList: TaskList | undefined = lists.find(list => list.displayName.toLowerCase().includes(res.listName.toLowerCase()));
     if (!chosenList) throw new Error('You have to select a List!');
 
     const tasksReq: Promise<Task[]> = chosenList.getTasks();
