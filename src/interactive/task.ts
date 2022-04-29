@@ -1,0 +1,45 @@
+import Table from 'cli-table';
+
+import I from '../commands/i';
+import { Task } from '../helpers/api/ms-graph/task';
+import { TaskList } from '../helpers/api/ms-graph/task-list';
+import { Interactive } from './interactive';
+
+async function task(this: I): Promise<void> {
+    const lists = await TaskList.getTaskLists();
+    const listsNames = lists.map(list => list.displayName);
+
+    const res = await Interactive.prompt([
+        {
+            type: 'autocomplete',
+            name: 'listName',
+            suggestOnly: true,
+            message: 'From which list?',
+            emptyText: 'No list with that name',
+            source: (_: any, input: string) => {
+                if (!input)
+                    return listsNames;
+
+                return listsNames
+                    .filter((listName: string) => listName.includes(input));
+            },
+        },
+    ]);
+
+    const chosenList: TaskList | undefined = lists.find(list => list.displayName.includes(res.listName));
+    if (!chosenList) throw new Error('You have to select a List!');
+
+    const tasksReq: Promise<Task[]> = chosenList.getTasks();
+
+    const table = new Table({
+        head: ['Name', 'Status', 'Content'],
+    });
+
+    for (const { title, status, body: { content } } of (await tasksReq))
+        table.push([title, status, content.replace(/(.{70}\w*) /g, '$1\n')]);
+    // split content with new-lines every 70 chars
+
+    this.log(table.toString());
+}
+
+export default task;
