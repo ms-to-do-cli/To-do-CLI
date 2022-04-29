@@ -8,7 +8,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  
+
 
 jobs:
   build:
@@ -30,9 +30,6 @@ jobs:
 
     - name: npm ci
       run: npm ci
-
-    - name: Build
-      run: npm run build
 
     - name: Tests
       run: npm run test
