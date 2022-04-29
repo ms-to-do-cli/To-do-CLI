@@ -184,6 +184,46 @@ describe('[INTERACTIVE] i', () => {
                         '│ Antivirus │ notStarted │ Download antivirus │\n' +
                         '└───────────┴────────────┴────────────────────┘');
                 });
+
+            test
+                .stdout()
+                // @ts-ignore
+                .stub(AppData, 'storage', MemoryStorage)
+                .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'task' }, { listName: 'Taken' }]))
+                .do(mockLogin)
+                .nock('https://graph.microsoft.com', api => {
+                    api.get('/v1.0/me/todo/lists').reply(200, {
+                        '@odata.context': 'https://graph.microsoft.com/v1.0/$metadata#users(\'USER\')/todo/lists',
+                        value: [listMocks.taskListResponseData[0]],
+                    } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                    api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                        value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1], taskMocks.taskResponseData[2]],
+                    } as ListTasksResponse);
+                })
+                .command(['i'])
+                .it('shows 3 tasks + body split new-line', ctx => {
+                    expect(ctx.stdout).to.contain(
+                        '┌─────────────┬────────────┬───────────────────────────────────────────────────────────────────────────────┐\n' +
+                        '│ Name        │ Status     │ Content                                                                       │\n' +
+                        '├─────────────┼────────────┼───────────────────────────────────────────────────────────────────────────────┤\n' +
+                        '│ Buy bread   │ completed  │                                                                               │\n' +
+                        '├─────────────┼────────────┼───────────────────────────────────────────────────────────────────────────────┤\n' +
+                        '│ Antivirus   │ notStarted │ Download antivirus                                                            │\n' +
+                        '├─────────────┼────────────┼───────────────────────────────────────────────────────────────────────────────┤\n' +
+                        '│ Lorem ipsum │ notStarted │ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus      │\n' +
+                        '│             │            │ eget felis dapibus condimentum non ut eros. Nam sodales ornare bibendum.      │\n' +
+                        '│             │            │ Etiam molestie ut nisl sit amet blandit. Morbi pretium consectetur quam,      │\n' +
+                        '│             │            │ id ornare arcu. Nulla ornare, sem vitae rhoncus feugiat, odio est tristique   │\n' +
+                        '│             │            │ magna, nec volutpat elit enim id tellus. Donec venenatis sollicitudin tellus, │\n' +
+                        '│             │            │ et maximus dui semper vitae. Maecenas laoreet lectus vitae ex sagittis        │\n' +
+                        '│             │            │ vestibulum. Mauris posuere metus eget erat egestas, quis viverra tortor       │\n' +
+                        '│             │            │ porta. Fusce egestas aliquet justo, in tempus ligula rutrum at. Sed aliquet   │\n' +
+                        '│             │            │ ornare lorem et ultricies. Mauris quis orci viverra, mattis arcu quis,        │\n' +
+                        '│             │            │ gravida nisl. Aliquam semper sapien nunc, et lacinia lectus sollicitudin      │\n' +
+                        '│             │            │ in.                                                                           │\n' +
+                        '└─────────────┴────────────┴───────────────────────────────────────────────────────────────────────────────┘');
+                });
         });
 
         describe('[BAD]', () => {

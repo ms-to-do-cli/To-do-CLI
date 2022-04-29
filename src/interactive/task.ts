@@ -36,7 +36,7 @@ async function task(this: I): Promise<void> {
     });
 
     for (const { title, status, body: { content } } of (await tasksReq))
-        table.push([title, status, content.replace(/([^\n]{70})/g, '$1\n')]);
+        table.push([title, status, content.replace(/(.{70}\w*) /g, '$1\n')]);
     // split content with new-lines every 70 chars
 
     this.log(table.toString());
