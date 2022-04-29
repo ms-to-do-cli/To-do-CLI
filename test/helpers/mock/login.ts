@@ -9,6 +9,12 @@ export const appDataFileName = Path.join(getAppDataPath(config.app.name), config
 export const mockLogin = () => {
     MemoryStorage.files.push({
         name: appDataFileName,
-        data: '{"authorizationToken": "AUTHORIZATION_TOKEN"}',
+        data: JSON.stringify({
+            refreshToken: 'REFRESH_TOKEN',
+            authorization: {
+                token: 'AUTHORIZATION_TOKEN',
+                expireDate: '2999-01-01T00:00:00.000',
+            },
+        }),
     });
 };

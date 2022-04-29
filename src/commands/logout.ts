@@ -28,6 +28,7 @@ export default class Logout extends Command {
         if (await AppData.isAuthenticated()) {
             // The previous user is logged off, while the new user can log on
             delete AppData.settings.authorization;
+            delete AppData.settings.refreshToken;
             delete AppData.settings.login;
             await AppData.storeSettings();
             const message = 'You are logged out.';
