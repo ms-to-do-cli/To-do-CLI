@@ -27,7 +27,12 @@ describe('list:show', () => {
                 })
                 .command(['list:show'])
                 .it('runs list show', ctx => {
-                    expect(ctx.stdout).to.contain('Owner | Share | Name  | Id\n  X   |       | Taken | AAAAAAAAAA');
+                    expect(ctx.stdout).to.contain(
+                        '┌───────┬───────┬───────┬────────────┐\n' +
+                        '│ Owner │ Share │ Name  │ Id         │\n' +
+                        '├───────┼───────┼───────┼────────────┤\n' +
+                        '│ true  │ false │ Taken │ AAAAAAAAAA │\n' +
+                        '└───────┴───────┴───────┴────────────┘');
                 });
 
             test
@@ -43,7 +48,14 @@ describe('list:show', () => {
                 })
                 .command(['list:show'])
                 .it('runs list show', ctx => {
-                    expect(ctx.stdout).to.contain('Owner | Share | Name          | Id\n  X   |       | Taken         | AAAAAAAAAA\n  X   |       | Shopping list | BBBBBBBBBB');
+                    expect(ctx.stdout).to.contain(
+                        '┌───────┬───────┬───────────────┬────────────┐\n' +
+                        '│ Owner │ Share │ Name          │ Id         │\n' +
+                        '├───────┼───────┼───────────────┼────────────┤\n' +
+                        '│ true  │ false │ Taken         │ AAAAAAAAAA │\n' +
+                        '├───────┼───────┼───────────────┼────────────┤\n' +
+                        '│ true  │ false │ Shopping list │ BBBBBBBBBB │\n' +
+                        '└───────┴───────┴───────────────┴────────────┘');
                 });
         });
         describe('json', () => {
