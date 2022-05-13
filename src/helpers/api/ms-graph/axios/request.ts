@@ -23,12 +23,20 @@ export const request = async <ResponseType>(type: RequestType, url: string, data
                 Authorization: await getAuthorizationBearer(),
             },
         });
+    case 'patch':
+    case 'PATCH':
+        return axios.patch<any, AxiosResponse<ResponseType>>(url, data, {
+            headers: {
+                ...headersPost,
+                Authorization: await getAuthorizationBearer(),
+            },
+        });
     default:
         throw new Error('(INTERNAL): the given http request type is not valid');
     }
 };
 
-export type RequestType = 'post' | 'POST' | 'get' | 'GET'
+export type RequestType = 'post' | 'POST' | 'get' | 'GET' | 'PATCH' | 'patch'
 
 export const getAuthorizationBearer = async () => {
     if (!await AppData.isAuthenticated())
