@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { expect, test } from '@oclif/test';
 import { describe } from 'mocha';
-import * as fs from 'node:fs';
 
 import { TaskListResponseData } from '../../../src/helpers/api/ms-graph/task-list';
 import { AppData } from '../../../src/helpers/config/app-data';
@@ -35,7 +34,6 @@ describe('list:edit', () => {
                 })
                 .command(['list:edit', 'Shopping list', 'Grocery List'])
                 .it('runs list edit Shopping list Grocery List', ctx => {
-                    fs.writeFileSync('C:\\Users\\lande\\AppData\\Roaming\\JetBrains\\IntelliJIdea2022.1\\scratches\\txt', ctx.stdout, 'utf-8');
                     expect(ctx.stdout).to.contain('Changed TaskList name from Shopping list to Grocery List');
                 });
 
