@@ -5,12 +5,23 @@ import { Interactive } from '../interactive';
 const trimpInput = (input: string): string => input.trim();
 
 async function addList(this: I): Promise<void> {
+    const lists = await TaskList.getTaskLists();
+    const listsNames = lists.map(list => list.displayName);
+
     const res: { name: string, newname: string } = await Interactive.prompt([{
-        type: 'input',
+        type: 'autocomplete',
         name: 'name',
+        suggestOnly: true,
         message: 'Which TaskList do you want to edit',
+        emptyText: 'No list with that name',
         transformer: trimpInput,
-        filter: trimpInput,
+        source: (_: any, input: string) => {
+            if (!input)
+                return listsNames;
+
+            return listsNames
+                .filter((listName: string) => listName.toLowerCase().includes(input.toLowerCase()));
+        },
     }, {
         type: 'input',
         name: 'newname',
