@@ -3,20 +3,22 @@ import Table from 'cli-table';
 
 import { Task } from '../../helpers/api/ms-graph/task';
 import { TaskList } from '../../helpers/api/ms-graph/task-list';
+import { splitter } from '../../helpers/string/splitter';
 
 export default class TaskShow extends Command {
     static description = 'Lists the tasks in a TaskList';
 
-    static examples = [
-        '<%= config.bin %> <%= command.id %>',
-    ];
+    static examples = ['<%= config.bin %> <%= command.id %>'];
 
     static flags = {
         format: Flags.boolean({
             char: 'F', description: 'Format the response in plain text',
-        }),
-        json: Flags.boolean({
+        }), json: Flags.boolean({
             char: 'J', description: 'Format the response in JSON',
+        }), body: Flags.boolean({
+            char: 'b', description: 'Show the body (details) of the Task',
+        }), id: Flags.boolean({
+            char: 'd', description: 'Show the ID of the Task',
         }),
     };
 
@@ -30,13 +32,11 @@ export default class TaskShow extends Command {
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(TaskShow);
 
-        if (flags.json && flags.format)
-            throw new Error('Cannot format in both JSON and plain text');
+        if (flags.json && flags.format) throw new Error('Cannot format in both JSON and plain text');
 
         const taskList: TaskList | undefined = await TaskList.getTaskListByName(args.taskListName);
 
-        if (taskList === undefined)
-            throw new Error('There is no TaskList with the given name');
+        if (taskList === undefined) throw new Error('There is no TaskList with the given name');
 
         const tasks: Task[] = await taskList.getTasks();
 
@@ -47,7 +47,6 @@ export default class TaskShow extends Command {
 
             for (const [i, task] of tasks.entries()) {
                 message += `${i}_@odata.etag=${task['@odata.etag']}\n\r`;
-                message += `${i}_id=${task.id}\n\r`;
                 message += `${i}_importance=${task.importance}\n\r`;
                 message += `${i}_status=${task.status}\n\r`;
                 message += `${i}_title=${task.title}\n\r`;
@@ -55,16 +54,32 @@ export default class TaskShow extends Command {
                 message += `${i}_lastModifiedDateTime=${task.lastModifiedDateTime}\n\r`;
                 message += `${i}_completedDateTime_dateTime=${task.completedDateTime?.dateTime}\n\r`;
                 message += `${i}_completedDateTime_timeZone=${task.completedDateTime?.timeZone}\n\r`;
+
+                if (flags.body) {
+                    message += `${i}_body_content=${task.body.content}\n\r`;
+                    message += `${i}_body_contentType=${task.body.contentType}\n\r`;
+                }
+
+                if (flags.id) message += `${i}_id=${task.id}\n\r`;
             }
 
             this.log(message);
         } else {
-            const table = new Table({
-                head: ['Name', 'Id'],
-            });
+            const head = ['Name'];
 
-            for (const task of tasks)
-                table.push([task.title, task.id]);
+            if (flags.body) head.push('Body');
+            if (flags.id) head.push('Id');
+
+            const table = new Table({ head });
+
+            for (const task of tasks) {
+                const arr = [splitter(task.title, 30, 30)];
+
+                if (flags.body) arr.push(splitter(task.body.content, 60, 60));
+                if (flags.id) arr.push(splitter(task.id));
+
+                table.push(arr);
+            }
 
             this.log(table.toString());
         }
