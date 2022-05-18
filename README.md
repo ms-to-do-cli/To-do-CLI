@@ -22,7 +22,7 @@ $ npm install -g microsoft-to-do-cli
 $ td COMMAND
 running command...
 $ td (--version)
-microsoft-to-do-cli/2.2.0 win32-x64 node-v16.13.0
+microsoft-to-do-cli/2.3.0 win32-x64 node-v16.13.0
 $ td --help [COMMAND]
 USAGE
   $ td COMMAND
@@ -76,7 +76,7 @@ EXAMPLES
   hello friend from oclif! (./src/commands/hello/index.ts)
 ```
 
-_See code: [dist/commands/hello/index.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v2.2.0/dist/commands/hello/index.ts)_
+_See code: [dist/commands/hello/index.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v2.3.0/dist/commands/hello/index.ts)_
 
 ## `td hello world`
 
@@ -129,7 +129,7 @@ EXAMPLES
   $ td i
 ```
 
-_See code: [dist/commands/i.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v2.2.0/dist/commands/i.ts)_
+_See code: [dist/commands/i.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v2.3.0/dist/commands/i.ts)_
 
 ## `td list add NAME`
 
@@ -214,7 +214,7 @@ EXAMPLES
   $ td login
 ```
 
-_See code: [dist/commands/login.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v2.2.0/dist/commands/login.ts)_
+_See code: [dist/commands/login.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v2.3.0/dist/commands/login.ts)_
 
 ## `td logout`
 
@@ -235,7 +235,7 @@ EXAMPLES
   $ td logout
 ```
 
-_See code: [dist/commands/logout.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v2.2.0/dist/commands/logout.ts)_
+_See code: [dist/commands/logout.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v2.3.0/dist/commands/logout.ts)_
 
 ## `td plugins`
 
