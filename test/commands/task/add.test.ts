@@ -14,68 +14,135 @@ describe('task:add', () => {
     beforeEach(reset);
 
     describe('[GOOD]', () => {
-        describe('no format', () => {
-            test
-                .stdout()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .do(mockLogin)
-                .nock('https://graph.microsoft.com/v1.0', api => {
-                    api.get('/me/todo/lists').reply(200, {
-                        value: listMocks.taskListResponseData,
-                    } as { value: TaskListResponseData[] });
-                    api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[0]);
-                })
-                .command(['task:add', 'Buy bread', 'Shopping list'])
-                .it('runs task add "Buy bread" "Shopping list"', ctx => {
-                    expect(ctx.stdout).to.contain('Added new Task Buy bread to Shopping list');
-                });
+        describe('no flag', () => {
+            describe('no format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[0]);
+                    })
+                    .command(['task:add', 'Buy bread', 'Shopping list'])
+                    .it('runs task add "Buy bread" "Shopping list"', ctx => {
+                        expect(ctx.stdout).to.contain('Added new Task Buy bread to Shopping list');
+                    });
+            });
+            describe('json', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[0]);
+                    })
+                    .command(['task:add', 'Buy bread', 'Shopping list', '--json'])
+                    .it('runs task add "Buy bread" "Shopping list" --json', ctx => {
+                        expect(ctx.stdout).to.not.be.null;
+                        expect(ctx.stdout).to.not.be.undefined;
+                        expect(ctx.stdout).to.not.be.empty;
+                        expect(JSON.parse(ctx.stdout)).to.deep.equal(taskMocks.taskResponseData[0]);
+                    });
+            });
+            describe('format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[0]);
+                    })
+                    .command(['task:add', 'Buy bread', 'Shopping list', '--format'])
+                    .it('runs task add "Buy bread" "Shopping list" --format', ctx => {
+                        expect(ctx.stdout).to.contain('importance=low');
+                        expect(ctx.stdout).to.contain('status=completed');
+                        expect(ctx.stdout).to.contain('title=Buy bread');
+                        expect(ctx.stdout).to.contain('createdDateTime=2020-01-29T00:00:00');
+                        expect(ctx.stdout).to.contain('lastModifiedDateTime=2020-01-29T00:00:00');
+                        expect(ctx.stdout).to.contain('completedDateTime_dateTime=2020-01-30T00:00:00');
+                        expect(ctx.stdout).to.contain('completedDateTime_timeZone=UTC');
+                        expect(ctx.stdout).to.contain('body_content=');
+                        expect(ctx.stdout).to.contain('body_contentType=text');
+                        expect(ctx.stdout).to.contain('id=1111111111');
+                    });
+            });
         });
-        describe('json', () => {
-            test
-                .stdout()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .do(mockLogin)
-                .nock('https://graph.microsoft.com/v1.0', api => {
-                    api.get('/me/todo/lists').reply(200, {
-                        value: listMocks.taskListResponseData,
-                    } as { value: TaskListResponseData[] });
-                    api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[0]);
-                })
-                .command(['task:add', 'Buy bread', 'Shopping list', '--json'])
-                .it('runs task add "Buy bread" "Shopping list" --json', ctx => {
-                    expect(ctx.stdout).to.not.be.null;
-                    expect(ctx.stdout).to.not.be.undefined;
-                    expect(ctx.stdout).to.not.be.empty;
-                    expect(JSON.parse(ctx.stdout)).to.deep.equal(taskMocks.taskResponseData[0]);
-                });
-        });
-        describe('format', () => {
-            test
-                .stdout()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .do(mockLogin)
-                .nock('https://graph.microsoft.com/v1.0', api => {
-                    api.get('/me/todo/lists').reply(200, {
-                        value: listMocks.taskListResponseData,
-                    } as { value: TaskListResponseData[] });
-                    api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[0]);
-                })
-                .command(['task:add', 'Buy bread', 'Shopping list', '--format'])
-                .it('runs task add "Buy bread" "Shopping list" --format', ctx => {
-                    expect(ctx.stdout).to.contain('importance=low');
-                    expect(ctx.stdout).to.contain('status=completed');
-                    expect(ctx.stdout).to.contain('title=Buy bread');
-                    expect(ctx.stdout).to.contain('createdDateTime=2020-01-29T00:00:00');
-                    expect(ctx.stdout).to.contain('lastModifiedDateTime=2020-01-29T00:00:00');
-                    expect(ctx.stdout).to.contain('completedDateTime_dateTime=2020-01-30T00:00:00');
-                    expect(ctx.stdout).to.contain('completedDateTime_timeZone=UTC');
-                    expect(ctx.stdout).to.contain('body_content=');
-                    expect(ctx.stdout).to.contain('body_contentType=text');
-                    expect(ctx.stdout).to.contain('id=1111111111');
-                });
+        describe('--body -b & --body-type -t', () => {
+            describe('no format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[1]);
+                    })
+                    .command(['task:add', 'Antivirus', 'Shopping list', '-b=Download antivirus'])
+                    .it('runs task add "Antivirus" "Shopping list" -b="Download antivirus"', ctx => {
+                        expect(ctx.stdout).to.contain('Added new Task Antivirus to Shopping list');
+                    });
+            });
+            describe('json', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[1]);
+                    })
+                    .command(['task:add', 'Antivirus', 'Shopping list', '--json', '-b=Download antivirus'])
+                    .it('runs task add "Antivirus" "Shopping list" --json -b="Download antivirus"', ctx => {
+                        expect(ctx.stdout).to.not.be.null;
+                        expect(ctx.stdout).to.not.be.undefined;
+                        expect(ctx.stdout).to.not.be.empty;
+                        expect(JSON.parse(ctx.stdout)).to.deep.equal(taskMocks.taskResponseData[1]);
+                    });
+            });
+            describe('format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[1]);
+                    })
+                    .command(['task:add', 'Anitvirus', 'Shopping list', '--format', '-b=Download antivirus'])
+                    .it('runs task add "Anitvirus" "Shopping list" --format -b="Download antivirus"', ctx => {
+                        expect(ctx.stdout).to.contain('importance=low');
+                        expect(ctx.stdout).to.contain('status=notStarted');
+                        expect(ctx.stdout).to.contain('title=Antivirus');
+                        expect(ctx.stdout).to.contain('createdDateTime=2020-02-29T00:00:00');
+                        expect(ctx.stdout).to.contain('lastModifiedDateTime=2020-02-29T00:00:00');
+                        expect(ctx.stdout).to.contain('completedDateTime_dateTime=');
+                        expect(ctx.stdout).to.contain('completedDateTime_timeZone=');
+                        expect(ctx.stdout).to.contain('body_content=Download antivirus');
+                        expect(ctx.stdout).to.contain('body_contentType=text');
+                        expect(ctx.stdout).to.contain('id=2222222222');
+                    });
+            });
         });
     });
 

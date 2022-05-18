@@ -350,6 +350,7 @@ describe('[INTERACTIVE] i', () => {
                     .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
                         listName: 'Shopping list',
                         title: 'Buy bread',
+                        addBody: false,
                     }]))
                     .do(mockLogin)
                     .nock('https://graph.microsoft.com/v1.0', api => {
@@ -365,6 +366,33 @@ describe('[INTERACTIVE] i', () => {
                     .it('add new list', ctx => {
                         expect(ctx.stdout).to.contain('Added new Task with title Buy bread to TaskList Shopping list');
                     });
+
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
+                        listName: 'SCHOOL',
+                        title: 'Antivirus',
+                        addBody: true,
+                    }, {
+                        content: 'Download antivirus',
+                        contentType: 'text',
+                    }]))
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.post('/me/todo/lists/CCCCCCCCCC/tasks').reply(201, taskMocks.taskResponseData[1]);
+                    })
+                    .command(['i'])
+                    .it('add new list with body', ctx => {
+                        expect(ctx.stdout).to.contain('Added new Task with title Antivirus to TaskList SCHOOL');
+                    });
             });
 
             describe('[BAD]', () => {
@@ -375,6 +403,7 @@ describe('[INTERACTIVE] i', () => {
                     .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
                         listName: 'Shopping list',
                         title: 'Buy bread',
+                        addBody: false,
                     }]))
                     .do(mockLogin)
                     .do(interactiveExitOnError)
@@ -392,6 +421,7 @@ describe('[INTERACTIVE] i', () => {
                     .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
                         listName: 'LISTNAME',
                         title: 'NAME',
+                        addBody: false,
                     }]))
                     .do(mockLogin)
                     .do(interactiveExitOnError)
@@ -414,6 +444,7 @@ describe('[INTERACTIVE] i', () => {
                     .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
                         listName: 'LISTNAME',
                         title: '',
+                        addBody: false,
                     }]))
                     .do(mockLogin)
                     .do(interactiveExitOnError)
@@ -433,6 +464,7 @@ describe('[INTERACTIVE] i', () => {
                     .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
                         listName: 'Shopping list',
                         title: 'Buy bread',
+                        addBody: false,
                     }]))
                     .do(interactiveExitOnError)
                     .command(['i'])
