@@ -49,6 +49,17 @@ export class TaskList implements TaskListResponseData {
         return (await request<ListTasksResponse>('GET', `${TaskList.link}/${this.id}/tasks`))
             .data.value.map<Task>(Task.taskResponseDataToTask);
     }
+
+    public async editDisplayName(newDisplayName: string): Promise<TaskList> {
+        const res: TaskListResponseData = (await request<TaskListResponseData>('PATCH', `${TaskList.link}/${this.id}`, { displayName: newDisplayName })).data;
+        this.displayName = res.displayName;
+        this.id = res.id;
+        this.isOwner = res.isOwner;
+        this.isShared = res.isShared;
+        this.wellknownListName = res.wellknownListName;
+
+        return this;
+    }
 }
 
 export interface TaskListResponseData {

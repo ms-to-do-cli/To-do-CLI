@@ -341,4 +341,123 @@ describe('[INTERACTIVE] i', () => {
                 .it('must be logged in');
         });
     });
+
+    describe('edit', () => {
+        describe('list', () => {
+            describe('[GOOD]', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'edit' }, { type: 'list' }, {
+                        name: 'Shopping list', newname: 'Grocery List',
+                    }]))
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.patch('/me/todo/lists/BBBBBBBBBB').reply(200, {
+                            ...listMocks.taskListResponseData[1],
+                            displayName: 'Grocery List',
+                        });
+                    })
+                    .command(['i'])
+                    .it('edit list', ctx => {
+                        expect(ctx.stdout).to.contain('Changed TaskList name from Shopping list to Grocery List');
+                    });
+
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'edit' }, { type: 'list' }, {
+                        name: 'SCHOOL', newname: 'lessons',
+                    }]))
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+
+                        api.patch('/me/todo/lists/CCCCCCCCCC').reply(200, {
+                            ...listMocks.taskListResponseData[1],
+                            displayName: 'lessons',
+                        });
+                    })
+                    .command(['i'])
+                    .it('edit list', ctx => {
+                        expect(ctx.stdout).to.contain('Changed TaskList name from SCHOOL to lessons');
+                    });
+            });
+        });
+
+        describe('[BAD]', () => {
+            test
+                .stderr()
+                // @ts-ignore
+                .stub(AppData, 'storage', MemoryStorage)
+                .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'edit' }, { type: 'list' }, {
+                    name: 'Shopping list', newname: '',
+                }]))
+                .do(mockLogin)
+                .nock('https://graph.microsoft.com/v1.0', api => {
+                    api.get('/me/todo/lists').reply(200, {
+                        value: listMocks.taskListResponseData,
+                    } as { value: TaskListResponseData[] });
+                })
+                .command(['i'])
+                .it('not given a new name');
+
+            test
+                .stderr()
+                // @ts-ignore
+                .stub(AppData, 'storage', MemoryStorage)
+                .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'edit' }, { type: 'list' }, {
+                    name: '', newname: 'Grocery Store',
+                }]))
+                .do(mockLogin)
+                .nock('https://graph.microsoft.com/v1.0', api => {
+                    api.get('/me/todo/lists').reply(200, {
+                        value: listMocks.taskListResponseData,
+                    } as { value: TaskListResponseData[] });
+                })
+                .command(['i'])
+                .it('not given a name');
+
+            test
+                .stderr()
+                // @ts-ignore
+                .stub(AppData, 'storage', MemoryStorage)
+                .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'edit' }, { type: 'list' }, {
+                    name: 'Shopping list', newname: 'Grocery List',
+                }]))
+                .do(mockLogin)
+                .do(interactiveExitOnError)
+                .nock('https://graph.microsoft.com', api => {
+                    api.get('/v1.0/me/todo/lists').reply(401, listMocks.badTokensResponse[0]);
+                })
+                .command(['i'])
+                .catch('Request failed with status code 401')
+                .it('status code 401');
+
+            test
+                .stderr()
+                // @ts-ignore
+                .stub(AppData, 'storage', MemoryStorage)
+                .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'list' }, {
+                    name: 'Shopping list', newname: 'Grocery List',
+                }]))
+                .do(interactiveExitOnError)
+                .command(['i'])
+                .catch('To use this command, you must be logged in')
+                .it('must be logged in');
+        });
+    });
 });
