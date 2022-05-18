@@ -15,164 +15,488 @@ describe('task:show', () => {
     beforeEach(reset);
 
     describe('[GOOD]', () => {
-        describe('no format', () => {
-            test
-                .stdout()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .do(mockLogin)
-                .nock('https://graph.microsoft.com', api => {
-                    api.get('/v1.0/me/todo/lists').reply(200, {
-                        value: [listMocks.taskListResponseData[0]],
-                    } as { '@odata.context': string, value: TaskListResponseData[] });
+        describe('no flag', () => {
+            describe('no format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
 
-                    api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
-                        value: [taskMocks.taskResponseData[0]],
-                    } as ListTasksResponse);
-                })
-                .command(['task:show'])
-                .it('shows 1 task', ctx => {
-                    expect(ctx.stdout).to.contain(
-                        '┌───────────┬────────────┐\n' +
-                        '│ Name      │ Id         │\n' +
-                        '├───────────┼────────────┤\n' +
-                        '│ Buy bread │ 1111111111 │\n' +
-                        '└───────────┴────────────┘');
-                });
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show'])
+                    .it('shows 1 task', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┐\n' +
+                            '│ Name      │\n' +
+                            '├───────────┤\n' +
+                            '│ Buy bread │\n' +
+                            '└───────────┘');
+                    });
 
-            test
-                .stdout()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .do(mockLogin)
-                .nock('https://graph.microsoft.com', api => {
-                    api.get('/v1.0/me/todo/lists').reply(200, {
-                        value: [listMocks.taskListResponseData[0]],
-                    } as { '@odata.context': string, value: TaskListResponseData[] });
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
 
-                    api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
-                        value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
-                    } as ListTasksResponse);
-                })
-                .command(['task:show'])
-                .it('shows 2 tasks', ctx => {
-                    expect(ctx.stdout).to.contain(
-                        '┌───────────┬────────────┐\n' +
-                        '│ Name      │ Id         │\n' +
-                        '├───────────┼────────────┤\n' +
-                        '│ Buy bread │ 1111111111 │\n' +
-                        '├───────────┼────────────┤\n' +
-                        '│ Antivirus │ 2222222222 │\n' +
-                        '└───────────┴────────────┘');
-                });
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show'])
+                    .it('shows 2 tasks', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┐\n' +
+                            '│ Name      │\n' +
+                            '├───────────┤\n' +
+                            '│ Buy bread │\n' +
+                            '├───────────┤\n' +
+                            '│ Antivirus │\n' +
+                            '└───────────┘');
+                    });
 
-            test
-                .stdout()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .do(mockLogin)
-                .nock('https://graph.microsoft.com', api => {
-                    api.get('/v1.0/me/todo/lists').reply(200, {
-                        value: [listMocks.taskListResponseData[1]],
-                    } as { '@odata.context': string, value: TaskListResponseData[] });
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[1]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
 
-                    api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
-                        value: [taskMocks.taskResponseData[0]],
-                    } as ListTasksResponse);
-                })
-                .command(['task:show', 'Shopping list'])
-                .it('runs show task with specified TaskListName', ctx => {
-                    expect(ctx.stdout).to.contain(
-                        '┌───────────┬────────────┐\n' +
-                        '│ Name      │ Id         │\n' +
-                        '├───────────┼────────────┤\n' +
-                        '│ Buy bread │ 1111111111 │\n' +
-                        '└───────────┴────────────┘');
-                });
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', 'Shopping list'])
+                    .it('runs show task with specified TaskListName', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┐\n' +
+                            '│ Name      │\n' +
+                            '├───────────┤\n' +
+                            '│ Buy bread │\n' +
+                            '└───────────┘');
+                    });
 
-            test
-                .stdout()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .do(mockLogin)
-                .nock('https://graph.microsoft.com', api => {
-                    api.get('/v1.0/me/todo/lists').reply(200, {
-                        value: [listMocks.taskListResponseData[1]],
-                    } as { '@odata.context': string, value: TaskListResponseData[] });
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[1]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
 
-                    api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
-                        value: [taskMocks.taskResponseData[0]],
-                    } as ListTasksResponse);
-                })
-                .command(['task:show', 'ShOpPiNg LiSt'])
-                .it('runs show task with specified TaskListName | case insensitive', ctx => {
-                    expect(ctx.stdout).to.contain(
-                        '┌───────────┬────────────┐\n' +
-                        '│ Name      │ Id         │\n' +
-                        '├───────────┼────────────┤\n' +
-                        '│ Buy bread │ 1111111111 │\n' +
-                        '└───────────┴────────────┘');
-                });
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', 'ShOpPiNg LiSt'])
+                    .it('runs show task with specified TaskListName | case insensitive', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┐\n' +
+                            '│ Name      │\n' +
+                            '├───────────┤\n' +
+                            '│ Buy bread │\n' +
+                            '└───────────┘');
+                    });
+            });
+
+            describe('json', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '--json'])
+                    .it('shows 2 tasks', ctx => {
+                        expect(JSON.parse(ctx.stdout)).to.deep.equal([taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]]);
+                    });
+            });
+
+            describe('format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '--format'])
+                    .it('shows 2 tasks', ctx => {
+                        expect(ctx.stdout).to.contain('0_importance=low');
+                        expect(ctx.stdout).to.contain('0_status=completed');
+                        expect(ctx.stdout).to.contain('0_title=Buy bread');
+                        expect(ctx.stdout).to.contain('0_createdDateTime=2020-01-29T00:00:00');
+                        expect(ctx.stdout).to.contain('0_lastModifiedDateTime=2020-01-29T00:00:00');
+                        expect(ctx.stdout).to.contain('0_completedDateTime_dateTime=2020-01-30T00:00:00');
+                        expect(ctx.stdout).to.contain('0_completedDateTime_timeZone=UTC');
+                        expect(ctx.stdout).to.contain('0_status=completed');
+
+                        expect(ctx.stdout).to.contain('1_importance=low');
+                        expect(ctx.stdout).to.contain('1_status=notStarted');
+                        expect(ctx.stdout).to.contain('1_title=Antivirus');
+                        expect(ctx.stdout).to.contain('1_createdDateTime=2020-02-29T00:00:00');
+                        expect(ctx.stdout).to.contain('1_lastModifiedDateTime=2020-02-29T00:00:00');
+                        expect(ctx.stdout).to.contain('1_completedDateTime_dateTime=undefined');
+                        expect(ctx.stdout).to.contain('1_completedDateTime_timeZone=undefined');
+                        expect(ctx.stdout).to.contain('1_status=notStarted');
+                    });
+            });
         });
+        describe('--id -d flag', () => {
+            describe('no format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
 
-        describe('json', () => {
-            test
-                .stdout()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .do(mockLogin)
-                .nock('https://graph.microsoft.com', api => {
-                    api.get('/v1.0/me/todo/lists').reply(200, {
-                        value: [listMocks.taskListResponseData[0]],
-                    } as { '@odata.context': string, value: TaskListResponseData[] });
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '--id'])
+                    .it('shows 1 task', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┬────────────┐\n' +
+                            '│ Name      │ Id         │\n' +
+                            '├───────────┼────────────┤\n' +
+                            '│ Buy bread │ 1111111111 │\n' +
+                            '└───────────┴────────────┘');
+                    });
 
-                    api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
-                        value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
-                    } as ListTasksResponse);
-                })
-                .command(['task:show', '--json'])
-                .it('shows 2 tasks', ctx => {
-                    expect(JSON.parse(ctx.stdout)).to.deep.equal([taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]]);
-                });
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '-d'])
+                    .it('shows 2 tasks', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┬────────────┐\n' +
+                            '│ Name      │ Id         │\n' +
+                            '├───────────┼────────────┤\n' +
+                            '│ Buy bread │ 1111111111 │\n' +
+                            '├───────────┼────────────┤\n' +
+                            '│ Antivirus │ 2222222222 │\n' +
+                            '└───────────┴────────────┘');
+                    });
+
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[1]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', 'Shopping list', '--id'])
+                    .it('runs show task with specified TaskListName', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┬────────────┐\n' +
+                            '│ Name      │ Id         │\n' +
+                            '├───────────┼────────────┤\n' +
+                            '│ Buy bread │ 1111111111 │\n' +
+                            '└───────────┴────────────┘');
+                    });
+
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[1]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '-d', 'ShOpPiNg LiSt'])
+                    .it('runs show task with specified TaskListName | case insensitive', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┬────────────┐\n' +
+                            '│ Name      │ Id         │\n' +
+                            '├───────────┼────────────┤\n' +
+                            '│ Buy bread │ 1111111111 │\n' +
+                            '└───────────┴────────────┘');
+                    });
+            });
+
+            describe('json', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '--json', '--id'])
+                    .it('shows 2 tasks', ctx => {
+                        expect(JSON.parse(ctx.stdout)).to.deep.equal([taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]]);
+                    });
+            });
+
+            describe('format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '--format', '--id'])
+                    .it('shows 2 tasks', ctx => {
+                        expect(ctx.stdout).to.contain('0_id=1111111111');
+                        expect(ctx.stdout).to.contain('0_importance=low');
+                        expect(ctx.stdout).to.contain('0_status=completed');
+                        expect(ctx.stdout).to.contain('0_title=Buy bread');
+                        expect(ctx.stdout).to.contain('0_createdDateTime=2020-01-29T00:00:00');
+                        expect(ctx.stdout).to.contain('0_lastModifiedDateTime=2020-01-29T00:00:00');
+                        expect(ctx.stdout).to.contain('0_completedDateTime_dateTime=2020-01-30T00:00:00');
+                        expect(ctx.stdout).to.contain('0_completedDateTime_timeZone=UTC');
+                        expect(ctx.stdout).to.contain('0_status=completed');
+
+                        expect(ctx.stdout).to.contain('1_id=2222222222');
+                        expect(ctx.stdout).to.contain('1_importance=low');
+                        expect(ctx.stdout).to.contain('1_status=notStarted');
+                        expect(ctx.stdout).to.contain('1_title=Antivirus');
+                        expect(ctx.stdout).to.contain('1_createdDateTime=2020-02-29T00:00:00');
+                        expect(ctx.stdout).to.contain('1_lastModifiedDateTime=2020-02-29T00:00:00');
+                        expect(ctx.stdout).to.contain('1_completedDateTime_dateTime=undefined');
+                        expect(ctx.stdout).to.contain('1_completedDateTime_timeZone=undefined');
+                        expect(ctx.stdout).to.contain('1_status=notStarted');
+                    });
+            });
         });
+        describe('--body -b flag', () => {
+            describe('no format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
 
-        describe('format', () => {
-            test
-                .stdout()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .do(mockLogin)
-                .nock('https://graph.microsoft.com', api => {
-                    api.get('/v1.0/me/todo/lists').reply(200, {
-                        value: [listMocks.taskListResponseData[0]],
-                    } as { '@odata.context': string, value: TaskListResponseData[] });
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '--body'])
+                    .it('shows 1 task', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┬──────┐\n' +
+                            '│ Name      │ Body │\n' +
+                            '├───────────┼──────┤\n' +
+                            '│ Buy bread │      │\n' +
+                            '└───────────┴──────┘');
+                    });
 
-                    api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
-                        value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
-                    } as ListTasksResponse);
-                })
-                .command(['task:show', '--format'])
-                .it('shows 2 tasks', ctx => {
-                    expect(ctx.stdout).to.contain('0_id=1111111111');
-                    expect(ctx.stdout).to.contain('0_importance=low');
-                    expect(ctx.stdout).to.contain('0_status=completed');
-                    expect(ctx.stdout).to.contain('0_title=Buy bread');
-                    expect(ctx.stdout).to.contain('0_createdDateTime=2020-01-29T00:00:00');
-                    expect(ctx.stdout).to.contain('0_lastModifiedDateTime=2020-01-29T00:00:00');
-                    expect(ctx.stdout).to.contain('0_completedDateTime_dateTime=2020-01-30T00:00:00');
-                    expect(ctx.stdout).to.contain('0_completedDateTime_timeZone=UTC');
-                    expect(ctx.stdout).to.contain('0_status=completed');
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
 
-                    expect(ctx.stdout).to.contain('1_id=2222222222');
-                    expect(ctx.stdout).to.contain('1_importance=low');
-                    expect(ctx.stdout).to.contain('1_status=notStarted');
-                    expect(ctx.stdout).to.contain('1_title=Antivirus');
-                    expect(ctx.stdout).to.contain('1_createdDateTime=2020-02-29T00:00:00');
-                    expect(ctx.stdout).to.contain('1_lastModifiedDateTime=2020-02-29T00:00:00');
-                    expect(ctx.stdout).to.contain('1_completedDateTime_dateTime=undefined');
-                    expect(ctx.stdout).to.contain('1_completedDateTime_timeZone=undefined');
-                    expect(ctx.stdout).to.contain('1_status=notStarted');
-                });
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '-b'])
+                    .it('shows 2 tasks', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┬────────────────────┐\n' +
+                            '│ Name      │ Body               │\n' +
+                            '├───────────┼────────────────────┤\n' +
+                            '│ Buy bread │                    │\n' +
+                            '├───────────┼────────────────────┤\n' +
+                            '│ Antivirus │ Download antivirus │\n' +
+                            '└───────────┴────────────────────┘');
+                    });
+
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[1]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', 'Shopping list', '--body'])
+                    .it('runs show task with specified TaskListName', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┬──────┐\n' +
+                            '│ Name      │ Body │\n' +
+                            '├───────────┼──────┤\n' +
+                            '│ Buy bread │      │\n' +
+                            '└───────────┴──────┘');
+                    });
+
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[1]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '-b', 'ShOpPiNg LiSt'])
+                    .it('runs show task with specified TaskListName | case insensitive', ctx => {
+                        expect(ctx.stdout).to.contain(
+                            '┌───────────┬──────┐\n' +
+                            '│ Name      │ Body │\n' +
+                            '├───────────┼──────┤\n' +
+                            '│ Buy bread │      │\n' +
+                            '└───────────┴──────┘');
+                    });
+            });
+
+            describe('json', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '--json', '--body'])
+                    .it('shows 2 tasks', ctx => {
+                        expect(JSON.parse(ctx.stdout)).to.deep.equal([taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]]);
+                    });
+            });
+
+            describe('format', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(200, {
+                            value: [listMocks.taskListResponseData[0]],
+                        } as { '@odata.context': string, value: TaskListResponseData[] });
+
+                        api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
+                            value: [taskMocks.taskResponseData[0], taskMocks.taskResponseData[1]],
+                        } as ListTasksResponse);
+                    })
+                    .command(['task:show', '--format', '--body'])
+                    .it('shows 2 tasks', ctx => {
+                        expect(ctx.stdout).to.contain('0_importance=low');
+                        expect(ctx.stdout).to.contain('0_status=completed');
+                        expect(ctx.stdout).to.contain('0_title=Buy bread');
+                        expect(ctx.stdout).to.contain('0_createdDateTime=2020-01-29T00:00:00');
+                        expect(ctx.stdout).to.contain('0_lastModifiedDateTime=2020-01-29T00:00:00');
+                        expect(ctx.stdout).to.contain('0_completedDateTime_dateTime=2020-01-30T00:00:00');
+                        expect(ctx.stdout).to.contain('0_completedDateTime_timeZone=UTC');
+                        expect(ctx.stdout).to.contain('0_status=completed');
+                        expect(ctx.stdout).to.contain('0_body_content=');
+                        expect(ctx.stdout).to.contain('0_body_contentType=');
+
+                        expect(ctx.stdout).to.contain('1_importance=low');
+                        expect(ctx.stdout).to.contain('1_status=notStarted');
+                        expect(ctx.stdout).to.contain('1_title=Antivirus');
+                        expect(ctx.stdout).to.contain('1_createdDateTime=2020-02-29T00:00:00');
+                        expect(ctx.stdout).to.contain('1_lastModifiedDateTime=2020-02-29T00:00:00');
+                        expect(ctx.stdout).to.contain('1_completedDateTime_dateTime=undefined');
+                        expect(ctx.stdout).to.contain('1_completedDateTime_timeZone=undefined');
+                        expect(ctx.stdout).to.contain('1_status=notStarted');
+                        expect(ctx.stdout).to.contain('1_body_content=Download antivirus');
+                        expect(ctx.stdout).to.contain('1_body_contentType=text');
+                    });
+            });
         });
     });
 

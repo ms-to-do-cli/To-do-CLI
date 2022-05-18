@@ -3,6 +3,7 @@ import Table from 'cli-table';
 import I from '../commands/i';
 import { Task } from '../helpers/api/ms-graph/task';
 import { TaskList } from '../helpers/api/ms-graph/task-list';
+import { splitter } from '../helpers/string/splitter';
 import { Interactive } from './interactive';
 
 async function task(this: I): Promise<void> {
@@ -36,8 +37,7 @@ async function task(this: I): Promise<void> {
     });
 
     for (const { title, status, body: { content } } of (await tasksReq))
-        table.push([title, status, content.replace(/(.{70}\w*) /g, '$1\n')]);
-    // split content with new-lines every 70 chars
+        table.push([title, status, splitter(content, 70)]);
 
     this.log(table.toString());
 }
