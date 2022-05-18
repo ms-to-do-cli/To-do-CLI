@@ -313,32 +313,132 @@ describe('[INTERACTIVE] i', () => {
                         expect(ctx.stdout).to.contain('Added new list named Shopping list');
                     });
             });
+
+            describe('[BAD]', () => {
+                test
+                    .stderr()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'list' }, { name: 'Shopping list' }]))
+                    .do(mockLogin)
+                    .do(interactiveExitOnError)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.post('/v1.0/me/todo/lists').reply(401, listMocks.badTokensResponse[0]);
+                    })
+                    .command(['i'])
+                    .catch('Request failed with status code 401')
+                    .it('status code 401');
+
+                test
+                    .stderr()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'list' }, { name: 'Shopping list' }]))
+                    .do(interactiveExitOnError)
+                    .command(['i'])
+                    .catch('To use this command, you must be logged in')
+                    .it('must be logged in');
+            });
         });
 
-        describe('[BAD]', () => {
-            test
-                .stderr()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'list' }, { name: 'Shopping list' }]))
-                .do(mockLogin)
-                .do(interactiveExitOnError)
-                .nock('https://graph.microsoft.com', api => {
-                    api.post('/v1.0/me/todo/lists').reply(401, listMocks.badTokensResponse[0]);
-                })
-                .command(['i'])
-                .catch('Request failed with status code 401')
-                .it('status code 401');
+        describe('task', () => {
+            describe('[GOOD]', () => {
+                test
+                    .stdout()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
+                        listName: 'Shopping list',
+                        title: 'Buy bread',
+                    }]))
+                    .do(mockLogin)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.post('/me/todo/lists/BBBBBBBBBB/tasks').reply(201, taskMocks.taskResponseData[0]);
+                    })
+                    .command(['i'])
+                    .it('add new list', ctx => {
+                        expect(ctx.stdout).to.contain('Added new Task with title Buy bread to TaskList Shopping list');
+                    });
+            });
 
-            test
-                .stderr()
-                // @ts-ignore
-                .stub(AppData, 'storage', MemoryStorage)
-                .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'list' }, { name: 'Shopping list' }]))
-                .do(interactiveExitOnError)
-                .command(['i'])
-                .catch('To use this command, you must be logged in')
-                .it('must be logged in');
+            describe('[BAD]', () => {
+                test
+                    .stderr()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
+                        listName: 'Shopping list',
+                        title: 'Buy bread',
+                    }]))
+                    .do(mockLogin)
+                    .do(interactiveExitOnError)
+                    .nock('https://graph.microsoft.com', api => {
+                        api.get('/v1.0/me/todo/lists').reply(401, listMocks.badTokensResponse[0]);
+                    })
+                    .command(['i'])
+                    .catch('Request failed with status code 401')
+                    .it('status code 401');
+
+                test
+                    .stderr()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
+                        listName: 'LISTNAME',
+                        title: 'NAME',
+                    }]))
+                    .do(mockLogin)
+                    .do(interactiveExitOnError)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                    })
+                    .command(['i'])
+                    .catch('Can not find TaskList with name LISTNAME')
+                    .it('no LISTNAME found');
+
+                test
+                    .stderr()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
+                        listName: 'LISTNAME',
+                        title: '',
+                    }]))
+                    .do(mockLogin)
+                    .do(interactiveExitOnError)
+                    .nock('https://graph.microsoft.com/v1.0', api => {
+                        api.get('/me/todo/lists').reply(200, {
+                            value: listMocks.taskListResponseData,
+                        } as { value: TaskListResponseData[] });
+                    })
+                    .command(['i'])
+                    .catch('You have to give a title!')
+                    .it('Empty title');
+
+                test
+                    .stderr()
+                    // @ts-ignore
+                    .stub(AppData, 'storage', MemoryStorage)
+                    .stub(Interactive, 'prompt', interactivePrompt([{ commandName: 'add' }, { type: 'task' }, {
+                        listName: 'Shopping list',
+                        title: 'Buy bread',
+                    }]))
+                    .do(interactiveExitOnError)
+                    .command(['i'])
+                    .catch('To use this command, you must be logged in')
+                    .it('must be logged in');
+            });
         });
     });
 
