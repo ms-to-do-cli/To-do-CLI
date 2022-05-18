@@ -4,7 +4,7 @@ import { TaskList } from '../../helpers/api/ms-graph/task-list';
 import formatLog from '../../helpers/log/format-log';
 
 export default class ListAdd extends Command {
-    static description = 'describe the command here';
+    static description = 'Create a List';
 
     static examples = [
         '<%= config.bin %> <%= command.id %>',

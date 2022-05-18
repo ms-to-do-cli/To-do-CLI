@@ -38,7 +38,7 @@ export default class ListEdit extends Command {
         if (flags.json && flags.format)
             throw new Error('Cannot format in both JSON and plain text');
 
-        const taskList: TaskList | undefined = await TaskList.getTaskListByName(args.currentName);
+        const taskList: TaskList | undefined = await TaskList.getTaskListByNameOrId(args.currentName);
 
         if (!taskList)
             throw new Error(`Can not find TaskList with name ${args.currentName}`);

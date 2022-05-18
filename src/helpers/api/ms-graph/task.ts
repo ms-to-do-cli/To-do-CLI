@@ -1,5 +1,7 @@
+import { request } from './axios/request';
 import { MsDateTime } from './entities/ms-date-time';
 import { MsPatternedRecurrence } from './entities/ms-patterned-recurrence';
+import { TaskList } from './task-list';
 
 export class Task implements TaskResponseData {
     public '@odata.etag'?: string;
@@ -46,6 +48,10 @@ export class Task implements TaskResponseData {
         this.linkedResources = taskData.linkedResources;
     }
 
+    public static async create(taskList: TaskList, task: TaskCreation) {
+        return Task.taskResponseDataToTask((await request<TaskResponseData>('POST', `${TaskList.link}/${taskList.id}/tasks`, task)).data);
+    }
+
     public static taskResponseDataToTask(data: TaskResponseData): Task {
         return new Task(data);
     }
@@ -82,4 +88,31 @@ export interface ListTasksResponse {
     '@odata.context'?: string,
     '@odata.nextLink'?: string,
     value: TaskResponseData[],
+}
+
+export interface TaskCreation {
+    'title': string,
+
+    'body'?: {
+        'content': string,
+        'contentType': 'text' | 'html',
+    },
+
+    'importance'?: 'low' | 'normal' | 'high',
+
+    'isReminderOn'?: boolean,
+    'reminderDateTime'?: MsDateTime,
+
+    'status'?: 'notStarted' | 'inProgress' | 'completed' | 'waitingOnOthers' | 'deferred',
+
+    'recurrence'?: MsPatternedRecurrence,
+    'linkedResources@odata.context'?: string,
+    'linkedResources'?: [
+        {
+            'applicationName': string,
+            'displayName': string,
+            'externalId': string,
+            'id': string
+        }
+    ]
 }
