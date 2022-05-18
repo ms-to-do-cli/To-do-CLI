@@ -34,7 +34,7 @@ export default class TaskShow extends Command {
 
         if (flags.json && flags.format) throw new Error('Cannot format in both JSON and plain text');
 
-        const taskList: TaskList | undefined = await TaskList.getTaskListByName(args.taskListName);
+        const taskList: TaskList | undefined = await TaskList.getTaskListByNameOrId(args.taskListName);
 
         if (taskList === undefined) throw new Error('There is no TaskList with the given name');
 

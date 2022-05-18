@@ -1,9 +1,9 @@
 import { config } from '../../config/config';
 import { request } from './axios/request';
-import { ListTasksResponse, Task } from './task';
+import { ListTasksResponse, Task, TaskCreation } from './task';
 
 export class TaskList implements TaskListResponseData {
-    private static readonly link = `${config.microsoftGraph.url.default}/me/todo/lists`;
+    public static readonly link = `${config.microsoftGraph.url.default}/me/todo/lists`;
     public '@odata.etag'?: string;
     public '@odata.type'?: string;
     public displayName: string;
@@ -33,11 +33,12 @@ export class TaskList implements TaskListResponseData {
         })).data);
     }
 
-    public static async getTaskListByName(name = 'defaultList'): Promise<TaskList | undefined> {
+    public static async getTaskListByNameOrId(name = 'defaultList'): Promise<TaskList | undefined> {
         return (await this.getTaskLists())
             .find(taskList =>
                 taskList.displayName.toLowerCase().includes(name.toLowerCase()) ||
-                taskList.wellknownListName.toLowerCase().includes(name.toLowerCase()),
+                taskList.wellknownListName.toLowerCase().includes(name.toLowerCase()) ||
+                taskList.id === name,
             );
     }
 
@@ -59,6 +60,10 @@ export class TaskList implements TaskListResponseData {
         this.wellknownListName = res.wellknownListName;
 
         return this;
+    }
+
+    public createTask(task: TaskCreation): Promise<Task> {
+        return Task.create(this, task);
     }
 }
 

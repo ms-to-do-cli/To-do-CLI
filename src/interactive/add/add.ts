@@ -1,9 +1,11 @@
 import I from '../../commands/i';
 import { Interactive, InteractiveCommand } from '../interactive';
 import addList from './add-list';
+import addTask from './add-task';
 
 export const addTypes: InteractiveCommand[] = [
     { name: 'list', run: addList },
+    { name: 'task', run: addTask },
 ];
 
 async function add(this: I): Promise<void> {

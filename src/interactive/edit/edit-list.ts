@@ -33,7 +33,7 @@ async function addList(this: I): Promise<void> {
     if (!res.name) throw new Error('You must choose a TaskList!');
     if (!res.newname) throw new Error('You must enter a new name!');
 
-    const taskList: TaskList | undefined = await TaskList.getTaskListByName(res.name);
+    const taskList: TaskList | undefined = await TaskList.getTaskListByNameOrId(res.name);
 
     if (!taskList)
         throw new Error(`Can not find TaskList with name ${res.name}`);
