@@ -9,7 +9,7 @@ async function addTask(this: I): Promise<void> {
     const lists = await TaskList.getTaskLists();
     const listsNames = lists.map(list => list.displayName);
 
-    const res: { title: string, listName: string } = await Interactive.prompt([
+    const res: { title: string, listName: string, addBody: boolean } = await Interactive.prompt([
         {
             type: 'autocomplete',
             name: 'listName',
@@ -23,12 +23,19 @@ async function addTask(this: I): Promise<void> {
                 return listsNames
                     .filter((listName: string) => listName.toLowerCase().includes(input.toLowerCase()));
             },
-        }, {
+        },
+        {
             type: 'input',
             name: 'title',
             message: 'Enter the title of the Task',
             transformer: trimpInput,
             filter: trimpInput,
+        },
+        {
+            type: 'confirm',
+            name: 'addBody',
+            default: false,
+            message: 'Would you like to add a body',
         },
     ]);
 
@@ -40,6 +47,24 @@ async function addTask(this: I): Promise<void> {
 
     const task: Task = await taskList.createTask({
         title: res.title,
+
+        ...(res.addBody ? {
+            body: (await Interactive.prompt([
+                {
+                    type: 'editor',
+                    name: 'content',
+                    message: 'Fill in the body of the Task',
+                    extension: 'html',
+                },
+                {
+                    type: 'list',
+                    name: 'contentType',
+                    message: 'What type is the body',
+                    default: 'text',
+                    choices: ['text', 'html'],
+                },
+            ])),
+        } : {}),
     });
 
     this.log(`Added new Task with title ${task.title} to TaskList ${taskList.displayName}`);
