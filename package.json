@@ -22,7 +22,7 @@
         "@oclif/plugin-help": "^5",
         "@oclif/plugin-plugins": "^2.0.1",
         "appdata-path": "^1.0.0",
-        "axios": "^0.26.1",
+        "axios": "^0.27.2",
         "cli-table": "^0.3.11",
         "enquirer-prompt-editor": "^2.0.1",
         "inquirer": "^8.2.4",
