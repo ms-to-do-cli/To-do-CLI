@@ -12,8 +12,22 @@ export default class TaskAdd extends Command {
     static flags = {
         format: Flags.boolean({
             char: 'F', description: 'Format the response in plain text',
-        }), json: Flags.boolean({
+        }),
+        json: Flags.boolean({
             char: 'J', description: 'Format the response in JSON',
+        }),
+        body: Flags.string({
+            char: 'b',
+            description: 'Add a body (details) to the Task',
+            default: '',
+            required: false,
+        }),
+        'body-type': Flags.string({
+            char: 't',
+            description: 'The type of the body',
+            dependsOn: ['body'],
+            options: ['text', 'html'],
+            required: false,
         }),
     };
 
@@ -36,6 +50,10 @@ export default class TaskAdd extends Command {
 
         const task: Task = await taskList.createTask({
             title: args.name,
+            body: {
+                content: flags.body,
+                contentType: (flags['body-type'] || 'text') as 'text' | 'html',
+            },
         });
 
         if (flags.format) {
