@@ -1,4 +1,6 @@
-import { Command, Flags } from '@oclif/core';
+import { Command, Flags, CliUx } from '@oclif/core';
+
+CliUx.ux.action.start('busy');
 
 export default class Hello extends Command {
     static description = 'Say hello';
