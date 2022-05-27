@@ -22,7 +22,7 @@ export default class TaskComplete extends Command {
     };
 
     static args = [{
-        name: 'name', description: 'the name of the Task you want to add', required: true,
+        name: 'name', description: 'the name of the Task you want to complete', required: true,
     }, {
         name: 'listName',
         description: 'the name or id of the TaskList to which you want to complete the Task',
