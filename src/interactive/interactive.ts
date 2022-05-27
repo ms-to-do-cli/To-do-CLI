@@ -8,6 +8,7 @@ import add from './add/add';
 import complete from './complete';
 import edit from './edit/edit';
 import exit from './exit';
+import incomplete from './incomplete';
 import list from './list';
 import task from './task';
 
@@ -18,6 +19,7 @@ export class Interactive {
         { name: 'add', run: add },
         { name: 'edit', run: edit },
         { name: 'complete', run: complete },
+        { name: 'incomplete', run: incomplete },
         { name: 'exit', run: exit },
     ];
 
