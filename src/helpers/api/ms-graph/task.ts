@@ -55,6 +55,24 @@ export class Task implements TaskResponseData {
     public static taskResponseDataToTask(data: TaskResponseData): Task {
         return new Task(data);
     }
+
+    public async edit(taskList: TaskList, data: TaskChange) {
+        const res: TaskResponseData = (await request<TaskResponseData>('PATCH', `${TaskList.link}/${taskList.id}/tasks/${this.id}`, data)).data;
+        this.id = res.id;
+        this.importance = res.importance;
+        this.isReminderOn = res.isReminderOn;
+        this.status = res.status;
+        this.title = res.title;
+        this.createdDateTime = res.createdDateTime;
+        this.lastModifiedDateTime = res.lastModifiedDateTime;
+        this.completedDateTime = res.completedDateTime;
+        this.reminderDateTime = res.reminderDateTime;
+        this.recurrence = res.recurrence;
+        this.body = res.body;
+        this.linkedResources = res.linkedResources;
+
+        return this;
+    }
 }
 
 export interface TaskResponseData {
@@ -90,8 +108,12 @@ export interface ListTasksResponse {
     value: TaskResponseData[],
 }
 
-export interface TaskCreation {
+export interface TaskCreation extends TaskChange {
     'title': string,
+}
+
+export interface TaskChange {
+    'title'?: string,
 
     'body'?: {
         'content': string,

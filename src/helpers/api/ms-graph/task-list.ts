@@ -65,6 +65,11 @@ export class TaskList implements TaskListResponseData {
     public createTask(task: TaskCreation): Promise<Task> {
         return Task.create(this, task);
     }
+
+    public async getTaskByNameOrId(nameOrId: string): Promise<Task | undefined> {
+        return (await this.getTasks())
+            .find(task => task.title.toLowerCase().includes(nameOrId.toLowerCase()) || task.id === nameOrId);
+    }
 }
 
 export interface TaskListResponseData {

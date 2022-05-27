@@ -1,9 +1,11 @@
 import I from '../../commands/i';
 import { Interactive, InteractiveCommand } from '../interactive';
 import editList from './edit-list';
+import editTask from './edit-task';
 
 export const editTypes: InteractiveCommand[] = [
     { name: 'list', run: editList },
+    { name: 'task', run: editTask },
 ];
 
 async function edit(this: I): Promise<void> {
