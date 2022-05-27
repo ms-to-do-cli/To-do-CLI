@@ -24,6 +24,17 @@ export default class TaskEdit extends Command {
             description: 'Change the title',
             required: false,
         }),
+        body: Flags.string({
+            char: 'b',
+            description: 'Change the body',
+            required: false,
+        }),
+        'body-type': Flags.string({
+            char: 'T',
+            description: 'Change the type of the body',
+            options: ['text', 'html'],
+            required: false,
+        }),
     };
 
     static args = [
@@ -45,7 +56,7 @@ export default class TaskEdit extends Command {
         if (flags.json && flags.format)
             throw new Error('Cannot format in both JSON and plain text');
 
-        if (!flags.title)
+        if (!flags.title && !flags.body && !flags['body-type'])
             throw new Error('You must change at least 1 value!');
 
         const taskList: TaskList | undefined = await TaskList.getTaskListByNameOrId(args.taskListName);
@@ -61,6 +72,10 @@ export default class TaskEdit extends Command {
         const editTask: TaskChange = {};
 
         if (flags.title) editTask.title = flags.title;
+        if (flags.body) editTask.body = {
+            content: flags.body,
+            contentType: ((flags['body-type'] as 'text' | 'html' | undefined) || task.body.contentType),
+        };
 
         await task.edit(taskList, editTask);
 

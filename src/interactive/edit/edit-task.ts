@@ -59,7 +59,7 @@ async function editTask(this: I): Promise<void> {
     if (!task)
         throw new Error(`Can not find Task with name ${taskName} in TaskList ${taskList.displayName}`);
 
-    const editTaskValues: { title: string } = await Interactive.prompt([{
+    const editTaskValues: { title: string, addBody: boolean } = await Interactive.prompt([{
         type: 'input',
         name: 'title',
         message: 'Enter a new title',
@@ -70,10 +70,37 @@ async function editTask(this: I): Promise<void> {
             return str;
         },
         default: task.title,
+    },
+    {
+        type: 'confirm',
+        name: 'addBody',
+        default: false,
+        message: 'Would you like to add a body',
     }]);
 
     const prevTitle = task.title;
-    await task.edit(taskList, editTaskValues);
+
+    await task.edit(taskList, {
+        title: editTaskValues.title,
+        ...(editTaskValues.addBody ? {
+            body: (await Interactive.prompt([
+                {
+                    type: 'editor',
+                    name: 'content',
+                    message: 'Fill in the body of the Task',
+                    extension: 'html',
+                    default: task.body.content,
+                },
+                {
+                    type: 'list',
+                    name: 'contentType',
+                    message: 'What type is the body',
+                    default: 'text',
+                    choices: ['text', 'html'],
+                },
+            ])),
+        } : {}),
+    });
 
     this.log(`Changed Task with title ${prevTitle} ${task.title === prevTitle ? '' : `to ${task.title} `}from TaskList ${taskList.displayName}`);
 }
