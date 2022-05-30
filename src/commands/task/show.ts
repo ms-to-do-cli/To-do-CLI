@@ -19,6 +19,8 @@ export default class TaskShow extends Command {
             char: 'b', description: 'Show the body (details) of the Task',
         }), id: Flags.boolean({
             char: 'd', description: 'Show the ID of the Task',
+        }), incomplete: Flags.boolean({
+            char: 'i', description: 'Only show the Tasks that are not complete yet',
         }),
     };
 
@@ -38,7 +40,9 @@ export default class TaskShow extends Command {
 
         if (taskList === undefined) throw new Error('There is no TaskList with the given name');
 
-        const tasks: Task[] = await taskList.getTasks();
+        let tasks: Task[] = await taskList.getTasks();
+
+        if (flags.incomplete) tasks = tasks.filter(task => task.status !== 'completed');
 
         if (flags.json) {
             this.log(JSON.stringify(tasks, null, '  '));
@@ -65,15 +69,17 @@ export default class TaskShow extends Command {
 
             this.log(message);
         } else {
-            const head = ['Name'];
+            const head = ['Status', 'Name'];
 
             if (flags.body) head.push('Body');
             if (flags.id) head.push('Id');
 
             const table = new Table({ head });
 
+            tasks.sort((t1, t2) => Task.statusOrder.indexOf(t1.status) - Task.statusOrder.indexOf(t2.status));
+
             for (const task of tasks) {
-                const arr = [splitter(task.title, 30, 30)];
+                const arr = [task.status === 'completed' ? 'X' : '', splitter(task.title, 30, 30)];
 
                 if (flags.body) arr.push(splitter(task.body.content, 60, 60));
                 if (flags.id) arr.push(splitter(task.id));

@@ -32,7 +32,11 @@ async function complete(this: I): Promise<void> {
     if (!taskList)
         throw new Error(`Can not find TaskList with name ${listName}`);
 
-    const tasks = await taskList.getTasks();
+    const tasks = (await taskList.getTasks()).filter(t => t.status !== 'completed');
+
+    if (tasks.length === 0)
+        throw new Error('No Tasks found to complete');
+
     const taskNames = tasks.map(task => task.title);
 
     const { taskName }: { taskName: string } = await Interactive.prompt([{

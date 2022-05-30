@@ -4,6 +4,10 @@ import { MsPatternedRecurrence } from './entities/ms-patterned-recurrence';
 import { TaskList } from './task-list';
 
 export class Task implements TaskResponseData {
+    public static readonly statusOrder:
+        ('notStarted' | 'inProgress' | 'completed' | 'waitingOnOthers' | 'deferred')[] =
+        ['notStarted', 'deferred', 'inProgress', 'waitingOnOthers', 'completed'];
+
     public '@odata.etag'?: string;
     public id: string;
     public importance: 'low' | 'normal' | 'high';

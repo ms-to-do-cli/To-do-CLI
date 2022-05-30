@@ -22,7 +22,7 @@ $ npm install -g microsoft-to-do-cli
 $ td COMMAND
 running command...
 $ td (--version)
-microsoft-to-do-cli/2.9.0 win32-x64 node-v16.13.0
+microsoft-to-do-cli/3.0.0 win32-x64 node-v16.13.0
 $ td --help [COMMAND]
 USAGE
   $ td COMMAND
@@ -33,7 +33,15 @@ USAGE
 # Commands
 
 <!-- commands -->
+* [`td hello PERSON`](#td-hello-person)
+* [`td hello world`](#td-hello-world)
 * [`td help [COMMAND]`](#td-help-command)
+* [`td i`](#td-i)
+* [`td list add NAME`](#td-list-add-name)
+* [`td list edit CURRENTNAME NEWNAME`](#td-list-edit-currentname-newname)
+* [`td list show`](#td-list-show)
+* [`td login`](#td-login)
+* [`td logout`](#td-logout)
 * [`td plugins`](#td-plugins)
 * [`td plugins:install PLUGIN...`](#td-pluginsinstall-plugin)
 * [`td plugins:inspect PLUGIN...`](#td-pluginsinspect-plugin)
@@ -43,6 +51,51 @@ USAGE
 * [`td plugins:uninstall PLUGIN...`](#td-pluginsuninstall-plugin-1)
 * [`td plugins:uninstall PLUGIN...`](#td-pluginsuninstall-plugin-2)
 * [`td plugins update`](#td-plugins-update)
+* [`td task add NAME LISTNAME`](#td-task-add-name-listname)
+* [`td task complete NAME [LISTNAME]`](#td-task-complete-name-listname)
+* [`td task edit NAME [TASKLISTNAME]`](#td-task-edit-name-tasklistname)
+* [`td task incomplete NAME [LISTNAME]`](#td-task-incomplete-name-listname)
+* [`td task show [TASKLISTNAME]`](#td-task-show-tasklistname)
+
+## `td hello PERSON`
+
+Say hello
+
+```
+USAGE
+  $ td hello [PERSON] -f <value>
+
+ARGUMENTS
+  PERSON  Person to say hello to
+
+FLAGS
+  -f, --from=<value>  (required) Whom is saying hello
+
+DESCRIPTION
+  Say hello
+
+EXAMPLES
+  $ oex hello friend --from oclif
+  hello friend from oclif! (./src/commands/hello/index.ts)
+```
+
+_See code: [dist/commands/hello/index.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v3.0.0/dist/commands/hello/index.ts)_
+
+## `td hello world`
+
+Say hello world
+
+```
+USAGE
+  $ td hello world
+
+DESCRIPTION
+  Say hello world
+
+EXAMPLES
+  $ oex hello world
+  hello world! (./src/commands/hello/world.ts)
+```
 
 ## `td help [COMMAND]`
 
@@ -63,6 +116,129 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.12/src/commands/help.ts)_
+
+## `td i`
+
+start the interactive CLI
+
+```
+USAGE
+  $ td i
+
+DESCRIPTION
+  start the interactive CLI
+
+EXAMPLES
+  $ td i
+```
+
+_See code: [dist/commands/i.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v3.0.0/dist/commands/i.ts)_
+
+## `td list add NAME`
+
+Create a List
+
+```
+USAGE
+  $ td list add [NAME] [-F] [-J]
+
+ARGUMENTS
+  NAME  the name of the list you want to add
+
+FLAGS
+  -F, --format  Format the response in plain text
+  -J, --json    Format the response in JSON
+
+DESCRIPTION
+  Create a List
+
+EXAMPLES
+  $ td list add
+```
+
+## `td list edit CURRENTNAME NEWNAME`
+
+edit TaskList name
+
+```
+USAGE
+  $ td list edit [CURRENTNAME] [NEWNAME] [-F] [-J]
+
+ARGUMENTS
+  CURRENTNAME  The current name of the TaskList you want to edit the name of
+  NEWNAME      The new name for the TaskList
+
+FLAGS
+  -F, --format  Format the response in plain text
+  -J, --json    Format the response in JSON
+
+DESCRIPTION
+  edit TaskList name
+
+EXAMPLES
+  $ td list edit "Grocery List" "Shopping List"
+```
+
+## `td list show`
+
+show all the lists
+
+```
+USAGE
+  $ td list show [-F] [-J]
+
+FLAGS
+  -F, --format  Format the response in plain text
+  -J, --json    Format the response in JSON
+
+DESCRIPTION
+  show all the lists
+
+EXAMPLES
+  $ td list show
+```
+
+## `td login`
+
+login into the graph api
+
+```
+USAGE
+  $ td login [-F] [-J]
+
+FLAGS
+  -F, --format  Format the response in plain text
+  -J, --json    Format the response in JSON
+
+DESCRIPTION
+  login into the graph api
+
+EXAMPLES
+  $ td login
+```
+
+_See code: [dist/commands/login.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v3.0.0/dist/commands/login.ts)_
+
+## `td logout`
+
+Log out of your microsoft account
+
+```
+USAGE
+  $ td logout [-F] [-J]
+
+FLAGS
+  -F, --format  Format the response in plain text
+  -J, --json    Format the response in JSON
+
+DESCRIPTION
+  Log out of your microsoft account
+
+EXAMPLES
+  $ td logout
+```
+
+_See code: [dist/commands/logout.ts](https://github.com/ms-to-do-cli/To-do-CLI/blob/v3.0.0/dist/commands/logout.ts)_
 
 ## `td plugins`
 
@@ -292,5 +468,134 @@ FLAGS
 
 DESCRIPTION
   Update installed plugins.
+```
+
+## `td task add NAME LISTNAME`
+
+Create a Task
+
+```
+USAGE
+  $ td task add [NAME] [LISTNAME] [-F] [-J] [-t text|html -b <value>]
+
+ARGUMENTS
+  NAME      the name of the Task you want to add
+  LISTNAME  the name or id of the TaskList to which you want to add the new task
+
+FLAGS
+  -F, --format              Format the response in plain text
+  -J, --json                Format the response in JSON
+  -b, --body=<value>        Add a body (details) to the Task
+  -t, --body-type=<option>  The type of the body
+                            <options: text|html>
+
+DESCRIPTION
+  Create a Task
+
+EXAMPLES
+  $ td task add
+```
+
+## `td task complete NAME [LISTNAME]`
+
+Complete a task
+
+```
+USAGE
+  $ td task complete [NAME] [LISTNAME] [-F] [-J]
+
+ARGUMENTS
+  NAME      the name of the Task you want to complete
+  LISTNAME  [default: defaultList] the name or id of the TaskList to which you want to complete the Task
+
+FLAGS
+  -F, --format  Format the response in plain text
+  -J, --json    Format the response in JSON
+
+DESCRIPTION
+  Complete a task
+
+EXAMPLES
+  $ td task complete "Buy bread" "Shopping List"
+
+  $ td task complete "Buy bread"
+```
+
+## `td task edit NAME [TASKLISTNAME]`
+
+edit a Task
+
+```
+USAGE
+  $ td task edit [NAME] [TASKLISTNAME] [-F] [-J] [-t <value>] [-b <value>] [-T text|html]
+
+ARGUMENTS
+  NAME          The name or id of the Task you want to edit
+  TASKLISTNAME  The name or id of the TaskList in which the Task is located
+
+FLAGS
+  -F, --format              Format the response in plain text
+  -J, --json                Format the response in JSON
+  -T, --body-type=<option>  Change the type of the body
+                            <options: text|html>
+  -b, --body=<value>        Change the body
+  -t, --title=<value>       Change the title
+
+DESCRIPTION
+  edit a Task
+
+EXAMPLES
+  $ td task edit "Buy bread" "Shopping List" -t "Buy white bread"
+
+  $ td task edit "Buy bread" "Shopping List" --body "White bread"
+```
+
+## `td task incomplete NAME [LISTNAME]`
+
+Incomplete a Task
+
+```
+USAGE
+  $ td task incomplete [NAME] [LISTNAME] [-F] [-J]
+
+ARGUMENTS
+  NAME      the name of the Task you want to incomplete
+  LISTNAME  [default: defaultList] the name or id of the TaskList to which you want to incomplete the Task
+
+FLAGS
+  -F, --format  Format the response in plain text
+  -J, --json    Format the response in JSON
+
+DESCRIPTION
+  Incomplete a Task
+
+EXAMPLES
+  $ td task incomplete "Buy bread" "Shopping List"
+
+  $ td task incomplete "Buy bread"
+```
+
+## `td task show [TASKLISTNAME]`
+
+Lists the tasks in a TaskList
+
+```
+USAGE
+  $ td task show [TASKLISTNAME] [-F] [-J] [-b] [-d]
+
+ARGUMENTS
+  TASKLISTNAME  [default: defaultList] The name of the TaskList from which the tasks are to be taken
+
+FLAGS
+  -F, --format  Format the response in plain text
+  -J, --json    Format the response in JSON
+  -b, --body    Show the body (details) of the Task
+  -d, --id      Show the ID of the Task
+
+DESCRIPTION
+  Lists the tasks in a TaskList
+
+EXAMPLES
+  $ td task show
 ```
 <!-- commandsstop -->
