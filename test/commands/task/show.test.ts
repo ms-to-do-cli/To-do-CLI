@@ -34,11 +34,11 @@ describe('task:show', () => {
                     .command(['task:show'])
                     .it('shows 1 task', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┐\n' +
-                            '│ Name      │\n' +
-                            '├───────────┤\n' +
-                            '│ Buy bread │\n' +
-                            '└───────────┘');
+                            '┌────────┬───────────┐\n' +
+                            '│ Status │ Name      │\n' +
+                            '├────────┼───────────┤\n' +
+                            '│ X      │ Buy bread │\n' +
+                            '└────────┴───────────┘');
                     });
 
                 test
@@ -58,13 +58,13 @@ describe('task:show', () => {
                     .command(['task:show'])
                     .it('shows 2 tasks', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┐\n' +
-                            '│ Name      │\n' +
-                            '├───────────┤\n' +
-                            '│ Buy bread │\n' +
-                            '├───────────┤\n' +
-                            '│ Antivirus │\n' +
-                            '└───────────┘');
+                            '┌────────┬───────────┐\n' +
+                            '│ Status │ Name      │\n' +
+                            '├────────┼───────────┤\n' +
+                            '│        │ Antivirus │\n' +
+                            '├────────┼───────────┤\n' +
+                            '│ X      │ Buy bread │\n' +
+                            '└────────┴───────────┘');
                     });
 
                 test
@@ -84,11 +84,11 @@ describe('task:show', () => {
                     .command(['task:show', 'Shopping list'])
                     .it('runs show task with specified TaskListName', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┐\n' +
-                            '│ Name      │\n' +
-                            '├───────────┤\n' +
-                            '│ Buy bread │\n' +
-                            '└───────────┘');
+                            '┌────────┬───────────┐\n' +
+                            '│ Status │ Name      │\n' +
+                            '├────────┼───────────┤\n' +
+                            '│ X      │ Buy bread │\n' +
+                            '└────────┴───────────┘');
                     });
 
                 test
@@ -102,17 +102,17 @@ describe('task:show', () => {
                         } as { '@odata.context': string, value: TaskListResponseData[] });
 
                         api.get(/\/v1.0\/me\/todo\/lists\/.*\/tasks/i).reply(200, {
-                            value: [taskMocks.taskResponseData[0]],
+                            value: [taskMocks.taskResponseData[1]],
                         } as ListTasksResponse);
                     })
-                    .command(['task:show', 'ShOpPiNg LiSt'])
+                    .command(['task:show', 'ShOpPiNg LiSt', '--incomplete'])
                     .it('runs show task with specified TaskListName | case insensitive', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┐\n' +
-                            '│ Name      │\n' +
-                            '├───────────┤\n' +
-                            '│ Buy bread │\n' +
-                            '└───────────┘');
+                            '┌────────┬───────────┐\n' +
+                            '│ Status │ Name      │\n' +
+                            '├────────┼───────────┤\n' +
+                            '│        │ Antivirus │\n' +
+                            '└────────┴───────────┘');
                     });
             });
 
@@ -193,11 +193,11 @@ describe('task:show', () => {
                     .command(['task:show', '--id'])
                     .it('shows 1 task', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┬────────────┐\n' +
-                            '│ Name      │ Id         │\n' +
-                            '├───────────┼────────────┤\n' +
-                            '│ Buy bread │ 1111111111 │\n' +
-                            '└───────────┴────────────┘');
+                            '┌────────┬───────────┬────────────┐\n' +
+                            '│ Status │ Name      │ Id         │\n' +
+                            '├────────┼───────────┼────────────┤\n' +
+                            '│ X      │ Buy bread │ 1111111111 │\n' +
+                            '└────────┴───────────┴────────────┘');
                     });
 
                 test
@@ -217,13 +217,13 @@ describe('task:show', () => {
                     .command(['task:show', '-d'])
                     .it('shows 2 tasks', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┬────────────┐\n' +
-                            '│ Name      │ Id         │\n' +
-                            '├───────────┼────────────┤\n' +
-                            '│ Buy bread │ 1111111111 │\n' +
-                            '├───────────┼────────────┤\n' +
-                            '│ Antivirus │ 2222222222 │\n' +
-                            '└───────────┴────────────┘');
+                            '┌────────┬───────────┬────────────┐\n' +
+                            '│ Status │ Name      │ Id         │\n' +
+                            '├────────┼───────────┼────────────┤\n' +
+                            '│        │ Antivirus │ 2222222222 │\n' +
+                            '├────────┼───────────┼────────────┤\n' +
+                            '│ X      │ Buy bread │ 1111111111 │\n' +
+                            '└────────┴───────────┴────────────┘');
                     });
 
                 test
@@ -243,11 +243,11 @@ describe('task:show', () => {
                     .command(['task:show', 'Shopping list', '--id'])
                     .it('runs show task with specified TaskListName', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┬────────────┐\n' +
-                            '│ Name      │ Id         │\n' +
-                            '├───────────┼────────────┤\n' +
-                            '│ Buy bread │ 1111111111 │\n' +
-                            '└───────────┴────────────┘');
+                            '┌────────┬───────────┬────────────┐\n' +
+                            '│ Status │ Name      │ Id         │\n' +
+                            '├────────┼───────────┼────────────┤\n' +
+                            '│ X      │ Buy bread │ 1111111111 │\n' +
+                            '└────────┴───────────┴────────────┘');
                     });
 
                 test
@@ -267,11 +267,11 @@ describe('task:show', () => {
                     .command(['task:show', '-d', 'ShOpPiNg LiSt'])
                     .it('runs show task with specified TaskListName | case insensitive', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┬────────────┐\n' +
-                            '│ Name      │ Id         │\n' +
-                            '├───────────┼────────────┤\n' +
-                            '│ Buy bread │ 1111111111 │\n' +
-                            '└───────────┴────────────┘');
+                            '┌────────┬───────────┬────────────┐\n' +
+                            '│ Status │ Name      │ Id         │\n' +
+                            '├────────┼───────────┼────────────┤\n' +
+                            '│ X      │ Buy bread │ 1111111111 │\n' +
+                            '└────────┴───────────┴────────────┘');
                     });
             });
 
@@ -354,11 +354,11 @@ describe('task:show', () => {
                     .command(['task:show', '--body'])
                     .it('shows 1 task', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┬──────┐\n' +
-                            '│ Name      │ Body │\n' +
-                            '├───────────┼──────┤\n' +
-                            '│ Buy bread │      │\n' +
-                            '└───────────┴──────┘');
+                            '┌────────┬───────────┬──────┐\n' +
+                            '│ Status │ Name      │ Body │\n' +
+                            '├────────┼───────────┼──────┤\n' +
+                            '│ X      │ Buy bread │      │\n' +
+                            '└────────┴───────────┴──────┘');
                     });
 
                 test
@@ -378,13 +378,13 @@ describe('task:show', () => {
                     .command(['task:show', '-b'])
                     .it('shows 2 tasks', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┬────────────────────┐\n' +
-                            '│ Name      │ Body               │\n' +
-                            '├───────────┼────────────────────┤\n' +
-                            '│ Buy bread │                    │\n' +
-                            '├───────────┼────────────────────┤\n' +
-                            '│ Antivirus │ Download antivirus │\n' +
-                            '└───────────┴────────────────────┘');
+                            '┌────────┬───────────┬────────────────────┐\n' +
+                            '│ Status │ Name      │ Body               │\n' +
+                            '├────────┼───────────┼────────────────────┤\n' +
+                            '│        │ Antivirus │ Download antivirus │\n' +
+                            '├────────┼───────────┼────────────────────┤\n' +
+                            '│ X      │ Buy bread │                    │\n' +
+                            '└────────┴───────────┴────────────────────┘');
                     });
 
                 test
@@ -404,11 +404,11 @@ describe('task:show', () => {
                     .command(['task:show', 'Shopping list', '--body'])
                     .it('runs show task with specified TaskListName', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┬──────┐\n' +
-                            '│ Name      │ Body │\n' +
-                            '├───────────┼──────┤\n' +
-                            '│ Buy bread │      │\n' +
-                            '└───────────┴──────┘');
+                            '┌────────┬───────────┬──────┐\n' +
+                            '│ Status │ Name      │ Body │\n' +
+                            '├────────┼───────────┼──────┤\n' +
+                            '│ X      │ Buy bread │      │\n' +
+                            '└────────┴───────────┴──────┘');
                     });
 
                 test
@@ -428,11 +428,11 @@ describe('task:show', () => {
                     .command(['task:show', '-b', 'ShOpPiNg LiSt'])
                     .it('runs show task with specified TaskListName | case insensitive', ctx => {
                         expect(ctx.stdout).to.contain(
-                            '┌───────────┬──────┐\n' +
-                            '│ Name      │ Body │\n' +
-                            '├───────────┼──────┤\n' +
-                            '│ Buy bread │      │\n' +
-                            '└───────────┴──────┘');
+                            '┌────────┬───────────┬──────┐\n' +
+                            '│ Status │ Name      │ Body │\n' +
+                            '├────────┼───────────┼──────┤\n' +
+                            '│ X      │ Buy bread │      │\n' +
+                            '└────────┴───────────┴──────┘');
                     });
             });
 
