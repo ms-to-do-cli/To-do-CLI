@@ -37,7 +37,7 @@ async function task(this: I): Promise<void> {
     });
 
     for (const { title, status, body: { content } } of (await tasksReq))
-        table.push([title, status, splitter(content, 70)]);
+        table.push([title, status, splitter(content, 70, 70)]);
 
     this.log(table.toString());
 }
